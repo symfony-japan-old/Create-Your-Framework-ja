@@ -149,3 +149,5 @@ CLI で ``autoload.php`` を実行できます。これは何も行わず、エ�
 .. _`PSR-0`:                     https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
 .. _`Symfony2 のコーディング標準`: http://symfony.com/doc/current/contributing/code/standards.html
 .. _`ClassLoader`:               http://symfony.com/doc/current/components/class_loader.html
+
+.. 2012/01/29 masakielastic db93254dea29d07acf1acd066029e5db0fdf33e6
