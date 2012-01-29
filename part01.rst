@@ -59,13 +59,12 @@ Web フレームワークの作成を通じて、一歩ずつ丁寧に優しく�
 コーディングスタンダード
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-コーディング標準とここで使われるものがなぜとてもひどいものなのかという論争を誰かが始める前に、一貫性のあるかぎり、問題ではないことを認めましょう。この本に関して、 `Symfony2 Coding
-Standards`_ を使っています。
+コーディング標準とここで使われるものがなぜとてもひどいものなのかという論争を誰かが始める前に、一貫性のあるかぎり、問題ではないことを認めましょう。この本に関して、 `Symfony2 のコーディング標準`_ を使っています。
 
 コンポーネントのインストール
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-われわれのフレームワークに必要な Symfony2 のコンポーネントをインストーするために、PHP プロジェクトの依存パッケージマネージャである `Composer`_ を使います。最初に、``composer.json`` ファイルに依存パッケージのリストを記載します。
+われわれのフレームワークに必要な Symfony2 のコンポーネントをインストーするために、PHP プロジェクトの依存パッケージマネージャである `Composer`_ を使います。最初に、 ``composer.json`` ファイルに依存パッケージのリストを記載します。
 
 .. code-block:: javascript
 
@@ -148,5 +147,5 @@ CLI で ``autoload.php`` を実行できます。これは何も行わず、エ�
 .. _`オートロード`:                  http://fr.php.net/autoload
 .. _`Composer`:                  http://packagist.org/about-composer
 .. _`PSR-0`:                     https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
-.. _`Symfony2 Coding Standards`: http://symfony.com/doc/current/contributing/code/standards.html
+.. _`Symfony2 のコーディング標準`: http://symfony.com/doc/current/contributing/code/standards.html
 .. _`ClassLoader`:               http://symfony.com/doc/current/components/class_loader.html
