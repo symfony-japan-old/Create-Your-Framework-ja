@@ -84,7 +84,7 @@ HttpFoundation コンポーネントで OOP を進める
 ---------------------------------------------
 
 Web のコードを書くということは HTTP とのやりとりです。ですので、我々の基本原則は `HTTP
-specification`_　を中心に置きます。
+の仕様`_　を中心に置きます。
 
 HTTP の仕様はクライアント (たとえばブラウザ) とサーバー (Web サーバー経由でのアプリケーション) のやりとりのしかたを記述しています。クライアントとサーバーのあいだの対話は明確に記述された *メッセージ* 、リクエストとレスポンスによって決められます: *クライアントはサーバーにリクエストを送り、このリクエストをもとにサーバーはレスポンスを返します* 。
 
@@ -256,10 +256,10 @@ PHP において、リクエストはグローバル変数によって表れさ�
 コンポーネントを使うことで、すべてのフレームワークとアプリケーションのあいだの相互運用性をよりよくするはじまりとなります (執筆の時点では `Symfony2`_ 、 `Drupal 8`_ 、 `phpBB 4`_ 、 `Silex`_  、 `Midgard CMS`_ 、 `Zikula`_ ...)。
 
 .. _`Twig`:                     http://twig.sensiolabs.com/
-.. _`Symfony2 versus Flat PHP`: http://symfony.com/doc/current/book/from_flat_php_to_symfony2.html
-.. _`HTTP specification`:       http://tools.ietf.org/wg/httpbis/
+.. _`フラットな PHP から Symfony2 へ`: http://docs.symfony.gr.jp/symfony2/book/from_flat_php_to_symfony2.html
+.. _`HTTP の仕様`:       http://tools.ietf.org/wg/httpbis/
 .. _`API`:                      http://api.symfony.com/2.0/Symfony/Component/HttpFoundation.html
-.. _`documentation`:            http://symfony.com/doc/current/components/http_foundation.html
+.. _`ドキュメント`:            http://symfony.com/doc/current/components/http_foundation/introduction.html
 .. _`audited`:                  http://symfony.com/blog/symfony2-security-audit
 .. _`Symfony2`:                 http://symfony.com/
 .. _`Drupal 8`:                 http://drupal.org/
@@ -267,3 +267,5 @@ PHP において、リクエストはグローバル変数によって表れさ�
 .. _`Silex`:                    http://silex.sensiolabs.org/
 .. _`Midgard CMS`:              http://www.midgard-project.org/
 .. _`Zikula`:                   http://zikula.org/
+
+.. 2012/04/26 masakielastic d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
