@@ -202,7 +202,7 @@ PHP において、リクエストはグローバル変数によって表れさ�
 
     Response のデバッグを行うには、これを文字にキャスティングします。これはレスポンスの HTML 表現 (ヘッダーとコンテンツ) を返します。
 
-言い忘れていましたが、これらのクラスは、Symfony のコードのほかのすべてのクラスのように、セキュリティの問題に関して独立した会社によって `audited`_ されました。そして Open-Source のプロジェクトであることは世界中の開発者がコードを見てくれており、潜在的なセキュリティの問題がすでに修正されていることも意味します。
+言い忘れていましたが、これらのクラスは、Symfony のコードのほかのすべてのクラスのように、セキュリティの問題に関して独立した会社によって `検査`_ されました。そして Open-Source のプロジェクトであることは世界中の開発者がコードを見てくれており、潜在的なセキュリティの問題がすでに修正されていることも意味します。
 あなたがお手製のフレームワークにプロフェッショナルなセキュリティ検査を最後に依頼したのはいつですか？
 
 クライアントの IP アドレスの取得のようなことはシンプルですが、セキュアではありません。::
@@ -260,7 +260,7 @@ PHP において、リクエストはグローバル変数によって表れさ�
 .. _`HTTP の仕様`:       http://tools.ietf.org/wg/httpbis/
 .. _`API`:                      http://api.symfony.com/2.0/Symfony/Component/HttpFoundation.html
 .. _`ドキュメント`:            http://symfony.com/doc/current/components/http_foundation/introduction.html
-.. _`audited`:                  http://symfony.com/blog/symfony2-security-audit
+.. _`検査`:                  http://symfony.com/blog/symfony2-security-audit
 .. _`Symfony2`:                 http://symfony.com/
 .. _`Drupal 8`:                 http://drupal.org/
 .. _`phpBB 4`:                  http://www.phpbb.com/
