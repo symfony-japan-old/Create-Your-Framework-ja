@@ -1,4 +1,4 @@
-Create your own framework... on top of the Symfony2 Components (part 7)
+Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 7)
 =======================================================================
 
 One down-side of our framework right now is that we need to copy and paste the
