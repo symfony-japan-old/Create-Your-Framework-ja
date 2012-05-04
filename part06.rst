@@ -1,12 +1,9 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 6)
 =======================================================================
 
-You might think that our framework is already pretty solid and you are
-probably right. But let's see how we can improve it nonetheless.
+我々のフレームワークはすでにとても堅牢であるとお考えかもしれません。そしてはそれはおそらく正しいです。それでも改善する方法を見てみましょう。
 
-Right now, all our examples use procedural code, but remember that controllers
-can be any valid PHP callbacks. Let's convert our controller to a proper
-class::
+今すぐ、我々のコードは手続き型のコードを使いますが、コントローラは任意の PHP コールバックになることを覚えておいてください。コントローラを適切なクラスに変換しましょう。::
 
     class LeapYearController
     {
@@ -20,24 +17,17 @@ class::
         }
     }
 
-Update the route definition accordingly::
+それに応じて、ルートの定義を更新します。::
 
     $routes->add('leap_year', new Routing\Route('/is_leap_year/{year}', array(
         'year' => null,
         '_controller' => array(new LeapYearController(), 'indexAction'),
     )));
 
-The move is pretty straightforward and makes a lot of sense as soon as you
-create more pages but you might have noticed a non-desirable side-effect...
-The ``LeapYearController`` class is *always* instantiated, even if the
-requested URL does not match the ``leap_year`` route. This is bad for one main
-reason: performance wise, all controllers for all routes must now be
-instantiated for every request. It would be better if controllers were
-lazy-loaded so that only the controller associated with the matched route is
-instantiated.
+コードの移動はとても直感的で複数のページを作るとすぐに効果がありますが、望ましくない副作用に気づくことになります。リクエストされた URL が ``leap_year`` ルートにマッチしない場合でも ``LeapYearController`` クラスのインスタンスが *常に* 生成されることです。これは1つの主な理由からわるいことです: パフォーマンスに目を向けると、すべてのルートに対してすべてのコントローラのインスタンスを生成しなければなりません。マッチしたルートと関係のあるコントローラのインスタンスだけが生成されるようにコントローラが遅延ロードされると好都合でしょう。
 
-To solve this issue, and a bunch more, let's install and use the HttpKernel
-component::
+この問題を解決するために HttpKernel
+コンポーネントをインストールして使いましょう。::
 
     {
         "require": {
@@ -48,10 +38,7 @@ component::
         }
     }
 
-The HttpKernel component has many interesting features, but the one we need
-right now is the *controller resolver*. A controller resolver knows how to
-determine the controller to execute and the arguments to pass to it, based on
-a Request object. All controller resolvers implement the following interface::
+HttpKernel コンポーネントはたくさんの興味深いフィーチャが備わっていますが、いますぐ必要なのは *コントローラリゾルバ* です。コントローラリゾルバは Request オブジェクトにもとづいて実行するコントローラとそれに渡す引数を決める方法を知っています。すべてのコントローラリゾルバは次のインターフェイスを実装します。::
 
     namespace Symfony\Component\HttpKernel\Controller;
 
@@ -62,19 +49,15 @@ a Request object. All controller resolvers implement the following interface::
         function getArguments(Request $request, $controller);
     }
 
-The ``getController()`` method relies on the same convention as the one we
-have defined earlier: the ``_controller`` request attribute must contain the
-controller associated with the Request. Besides the built-in PHP callbacks,
-``getController()`` also supports strings composed of a class name followed by
-two colons and a method name as a valid callback, like 'class::method'::
+``getController()`` メソッドは以前定義したものと同じ慣習に頼っています: ``_controller`` リクエスト属性は Request に関連するコントローラを含んでいなければなりません。PHP 組み込みのコールバックに加えて、
+``getController()`` は「class::method」のように、クラスの名前と2つのコロンの後に続く有効なコールバックとしてのメソッドの名前で構成される文字列もサポートします。::
 
     $routes->add('leap_year', new Routing\Route('/is_leap_year/{year}', array(
         'year' => null,
         '_controller' => 'LeapYearController::indexAction',
     )));
 
-To make this code work, modify the framework code to use the controller
-resolver from HttpKernel::
+このコードが機能するようにするため、HttpKernel からコントローラリゾルバを使うようにフレームワークのコードを修正します。::
 
     use Symfony\Component\HttpKernel;
 
@@ -87,43 +70,36 @@ resolver from HttpKernel::
 
 .. note::
 
-    As an added bonus, the controller resolver properly handles the error
-    management for you: when you forget to define a ``_controller`` attribute
-    for a Route for instance.
+    おまけとして、コントローラリゾルバはあなたの代わりにエラーを適切に管理します。
+    たとえば、Route に対して ``_controller`` 属性を定義することを忘れたときなどです。
 
-Now, let's see how the controller arguments are guessed. ``getArguments()``
-introspects the controller signature to determine which arguments to pass to
-it by using the native PHP `reflection`_.
+では、コントローラの引数がどのように推測されるのか見てみましょう。 ``getArguments()``
+は PHP ネイティブの `リフレクション`_ を利用することでどの引数を渡すかどうか決めるためにコントローラのシグネチャをイントロスペクトします。
 
-The ``indexAction()`` method needs the Request object as an argument.
-```getArguments()`` knows when to inject it properly if it is type-hinted
-correctly::
+``indexAction()`` メソッドは Request オブジェクトを引数として必要とします。
+```getArguments()`` はタイプヒントが適切であればそれをインジェクトするタイミングを知っています。::
 
     public function indexAction(Request $request)
 
     // won't work
     public function indexAction($request)
 
-More interesting, ``getArguments()`` is also able to inject any Request
-attribute; the argument just needs to have the same name as the corresponding
-attribute::
+より興味深いことに、 ``getArguments()`` は任意の Request
+属性もインジェクトできます; 引数は対応する属性と同じ名前をもつことが必要なだけです。::
 
     public function indexAction($year)
 
-You can also inject the Request and some attributes at the same time (as the
-matching is done on the argument name or a type hint, the arguments order does
-not matter)::
+Request と属性を同時にインジェクトすることもできます (マッチングは引数の名前もしくはタイプヒントによって行われるので、引数の順序は関係ありません)::
 
     public function indexAction(Request $request, $year)
 
     public function indexAction($year, Request $request)
 
-Finally, you can also define default values for any argument that matches an
-optional attribute of the Request::
+最後に、Request のオプション属性にマッチする引数のデフォルト値を定義することもできます。::
 
     public function indexAction($year = 2012)
 
-Let's just inject the ``$year`` request attribute for our controller::
+コントローラに対して ``$year`` リクエスト属性をインジェクトしましょう。::
 
     class LeapYearController
     {
@@ -137,22 +113,18 @@ Let's just inject the ``$year`` request attribute for our controller::
         }
     }
 
-The controller resolver also takes care of validating the controller callable
-and its arguments. In case of a problem, it throws an exception with a nice
-message explaining the problem (the controller class does not exist, the
-method is not defined, an argument has no matching attribute, ...).
+コントローラリゾルバはコール可能なコントローラと引数のバリデーションも考慮します。問題があれば、問題を説明するすばらしいメッセージつきの例外を投げします (コントローラクラスが存在しない、メソッドが定義されていない、属性にマッチする引数が存在しない、など)。
 
 .. note::
 
-    With the great flexibility of the default controller resolver, you might
-    wonder why someone would want to create another one (why would there be an
-    interface if not). Two examples: in Symfony2, ``getController()`` is
-    enhanced to support `controllers as services`_; and in
-    `FrameworkExtraBundle`_, ``getArguments()`` is enhanced to support
-    parameter converters, where request attributes are converted to objects
-    automatically.
+    デフォルトのコントローラリゾルバの大いなる柔軟性によって、
+    誰かがなぜ別のものを作りたいのか疑問に思うかもしれません (そうでなければなぜインターフェイスが存在するのでしょう
+    )。2つの例を挙げます: Symfony2 において ``getController()`` は
+    `サービスとしてのコントローラ`_ をサポートするよう強化されました;
+    `FrameworkExtraBundle`_ において ``getArguments()`` はパラメータコンバータをサポートするように強化され、
+    リクエスト属性はオブジェクトに自動変換されます。
 
-Let's conclude with the new version of our framework::
+新しいバージョンのフレームワークで締めくくりましょう。::
 
     <?php
 
@@ -197,11 +169,10 @@ Let's conclude with the new version of our framework::
 
     $response->send();
 
-Think about it once more: our framework is more robust and more flexible than
-ever and it still has less than 40 lines of code.
+より深く考えてみましょう: 我々のフレームワークはより強固で柔軟になり、まだ40行未満のコードです。
 
-.. _`reflection`:              http://php.net/reflection
+.. _`リフレクション`:              http://php.net/reflection
 .. _`FrameworkExtraBundle`:    http://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
-.. _`controllers as services`: http://symfony.com/doc/current/cookbook/controller/service.html
+.. _`サービスとしてのコントローラ`: http://symfony.com/doc/current/cookbook/controller/service.html
 
-.. 20XX/XX/XX username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
+.. 2012/05/02 masakielastic d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
