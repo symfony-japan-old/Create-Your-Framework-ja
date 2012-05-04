@@ -1,18 +1,11 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 5)
 =======================================================================
 
-The astute reader has noticed that our framework hardcodes the way specific
-"code" (the templates) is run. For simple pages like the ones we have created
-so far, that's not a problem, but if you want to add more logic, you would be
-forced to put the logic into the template itself, which is probably not a good
-idea, especially if you still have the separation of concerns principle in
-mind.
+賢明な読者は特定の「コード」 (テンプレート) が実行される方法をフレームワークがハードコードしていることに気づいています。これまでつくったようなシンプルなページに関して、問題はありませんが、さらにロジックを追加したい場合、ロジックをテンプレート自身に置くことを強制させられます。これはとりわけ関心の分離をまだ覚えているのであれば、おそらくはよい考えではありません。
 
-Let's separate the template code from the logic by adding a new layer: the
-controller: *The controller's mission is to generate a Response based on the
-information conveyed by the client's Request.*
+新しいレイヤーであるコントローラを追加することでテンプレートのコードをロジックから分離しましょう: *コントローラのミッションはクライアントの Request によって運ばれた情報にもとづいて Response を生成することです。*
 
-Change the template rendering part of the framework to read as follows::
+次のようにフレームワークのテンプレートレンダリングの部分を変更します。::
 
     <?php
 
@@ -29,17 +22,10 @@ Change the template rendering part of the framework to read as follows::
         $response = new Response('An error occurred', 500);
     }
 
-As the rendering is now done by an external function (``render_template()``
-here), we need to pass to it the attributes extracted from the URL. We could
-have passed them as an additional argument to ``render_template()``, but
-instead, let's use another feature of the ``Request`` class called
-*attributes*: Request attributes lets you attach additional information about
-the Request that is not directly related to the HTTP Request data.
+レンダリングは外部関数 (ここでは ``render_template()``
+) によって行われるので、URL から抽出した属性を渡す必要があります。これらを ``render_template()`` に追加の引数として渡すことができますが、代わりに、*属性* と呼ばれる ``Request`` クラスの別のフィーチャを使いましょう: Request 属性によって HTTP Request データに直接は関係のない情報を添付できます。
 
-You can now create the ``render_template()`` function, a generic controller
-that renders a template when there is no specific logic. To keep the same
-template as before, request attributes are extracted before the template is
-rendered::
+これでロジックが指定されていないときにテンプレートをレンダリングする一般的なコントローラである ``render_template()`` 関数をつくることができます。以前と同じテンプレートを保つために、テンプレートがレンダリングされる前にリクエスト属性が抽出されます。::
 
     function render_template($request)
     {
@@ -50,13 +36,10 @@ rendered::
         return new Response(ob_get_clean());
     }
 
-As ``render_template`` is used as an argument to the PHP ``call_user_func()``
-function, we can replace it with any valid PHP `callbacks`_. This allows us to
-use a function, an anonymous function, or a method of a class as a
-controller... your choice.
+``render_template`` は PHP ``call_user_func()``
+関数への引数として使われるので、任意の有効な PHP `コールバック`_ に置き換えることができます。これによって、あなたが選んだ関数、匿名関数、もしくはクラスのメソッドをコントローラとして使うことができます。
 
-As a convention, for each route, the associated controller is configured via
-the ``_controller`` route attribute::
+関数として、それぞれのルートに対して、 ``_controller`` ルート属性を通じて関連するコントローラの調整が行われます。::
 
     $routes->add('hello', new Routing\Route('/hello/{name}', array(
         'name' => 'World',
@@ -72,8 +55,7 @@ the ``_controller`` route attribute::
         $response = new Response('An error occurred', 500);
     }
 
-A route can now be associated with any controller and of course, within a
-controller, you can still use the ``render_template()`` to render a template::
+ルートはコントローラと関連づけることが可能で、もちろん、コントローラの範囲ではテンプレートをレンダリングするのにまだ ``render_template()`` を使うことができます。::
 
     $routes->add('hello', new Routing\Route('/hello/{name}', array(
         'name' => 'World',
@@ -82,25 +64,24 @@ controller, you can still use the ``render_template()`` to render a template::
         }
     )));
 
-This is rather flexible as you can change the Response object afterwards and
-you can even pass additional arguments to the template::
+これはより柔軟性があり Response オブジェクトを後で変更できるのでテンプレートに追加の引数を渡すことができます。::
 
     $routes->add('hello', new Routing\Route('/hello/{name}', array(
         'name' => 'World',
         '_controller' => function ($request) {
-            // $foo will be available in the template
+            // $foo はテンプレートの中で利用できるようになります
             $request->attributes->set('foo', 'bar');
 
             $response = render_template($request);
 
-            // change some header
+            // ヘッダーを変更します
             $response->headers->set('Content-Type', 'text/plain');
 
             return $response;
         }
     )));
 
-Here is the updated and improved version of our framework::
+フレームワークのアップデートされ改善されたバージョンは次のようになります。::
 
     <?php
 
@@ -139,13 +120,7 @@ Here is the updated and improved version of our framework::
 
     $response->send();
 
-To celebrate the birth of our new framework, let's create a brand new
-application that needs some simple logic. Our application has one page that
-says whether a given year is a leap year or not. When calling
-``/is_leap_year``, you get the answer for the current year, but you can
-also specify a year like in ``/is_leap_year/2009``. Being generic, the
-framework does not need to be modified in any way, just create a new
-``app.php`` file::
+新しいフレームワークの誕生を祝うため、シンプルなロジックを必要とする真新しいアプリケーションをつくりましょう。我々のアプリケーションには任意の年がうるう年かどうかを伝える1つのページが用意されています。 ``/is_leap_year`` を呼び出すとき、現在の年に対する回答を得られますが、``/is_leap_year/2009`` のように年を指定することもできます。一般的には、フレームワークを修正する必要はなく、新しい ``app.php`` ファイルをつくるだけですみます。::
 
     <?php
 
@@ -176,17 +151,11 @@ framework does not need to be modified in any way, just create a new
 
     return $routes;
 
-The ``is_leap_year()`` function returns ``true`` when the given year is a leap
-year, ``false`` otherwise. If the year is null, the current year is tested.
-The controller is simple: it gets the year from the request attributes, pass
-it to the `is_leap_year()`` function, and according to the return value it
-creates a new Response object.
+``is_leap_year()`` 関数は渡された年がうるう年であれば ``true`` を返し、そうでなければ ``false`` を返します。年が null であれば、現在の年がテストされます。コントローラはシンプルです: リクエスト属性から年を取得し、これを `is_leap_year()`` 関数に渡し、戻り値にしたがって、新しい Response オブジェクトをつくります。
 
-As always, you can decide to stop here and use the framework as is; it's
-probably all you need to create simple websites like those fancy one-page
-`websites`_ and hopefully a few others.
+いつものように、ここで止めてフレームワークをそのまま使うことができます; おそらくあなたに必要なことは `websites`_ とその他のファンシーな1ページの `Web サイト`_ のようなシンプルな Web サイトを作ることです。
 
-.. _`callbacks`: http://php.net/callback#language.types.callback
-.. _`websites`:  http://kottke.org/08/02/single-serving-sites
+.. _`コールバック`: http://php.net/callback#language.types.callback
+.. _`Web サイト`:  http://kottke.org/08/02/single-serving-sites
 
-.. 20XX/XX/XX username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
+.. 2012/05/05 username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
