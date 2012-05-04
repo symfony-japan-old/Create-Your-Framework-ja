@@ -1,9 +1,7 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 3)
 =======================================================================
 
-Up until now, our application is simplistic as there is only one page. To
-spice things up a little bit, let's go crazy and add another page that says
-goodbye::
+これまで、ページが1つしかなかったので、我々のアプリケーションは割り切ったものでした。少しおもしろくするために、頭をやわらかくして、Goodbye を伝える別のページを追加しましょう。::
 
     <?php
 
@@ -19,13 +17,9 @@ goodbye::
     $response = new Response('Goodbye!');
     $response->send();
 
-As you can see for yourself, much of the code is exactly the same as the one
-we have written for the first page. Let's extract the common code that we can
-share between all our pages. Code sharing sounds like a good plan to create
-our first "real" framework!
+ご覧の通り、大半のコードは最初のページに対して書いたものとまったく同じです。すべてのページのあいだで共有できる共通のコードを抽出しましょう。コードのシェアリングは我々の最初の「実際の」フレームワークをつくるためのよいプランに見えます！
 
-The PHP way of doing the refactoring would probably be the creation of an
-include file::
+PHP 流のリファクタリングはおそらくはファイルのインクルードです。::
 
     <?php
 
@@ -39,7 +33,7 @@ include file::
     $request = Request::createFromGlobals();
     $response = new Response();
 
-Let's see it in action::
+実際の例を見てみましょう。::
 
     <?php
 
@@ -52,7 +46,7 @@ Let's see it in action::
     $response->setContent(sprintf('Hello %s', htmlspecialchars($input, ENT_QUOTES, 'UTF-8')));
     $response->send();
 
-And for the "Goodbye" page::
+そして「Goodbye」を表示するページです。::
 
     <?php
 
@@ -63,25 +57,18 @@ And for the "Goodbye" page::
     $response->setContent('Goodbye!');
     $response->send();
 
-We have indeed moved most of the shared code into a central place, but it does
-not feel like a good abstraction, doesn't it? First, we still have the
-``send()`` method in all pages, then our pages does not look like templates,
-and we are still not able to test this code properly.
+共有コードの大半を中心的な場所に実際に移動させましたが、あまりよい抽象化には見ませんよね？最初に、すべてのページにおいて ``send()`` メソッドがすでに用意されていますが、我々のページはテンプレートとは異なるので、このコードをテストすることはまだできません。
 
-Moreover, adding a new page means that we need to create a new PHP script,
-which name is exposed to the end user via the URL
-(``http://example.com/bye.php``): there is a direct mapping between the PHP
-script name and the client URL. This is because the dispatching of the request
-is done by the web server directly. It might be a good idea to move this
-dispatching to our code for better flexibility. This can be easily achieved by
-routing all client requests to a single PHP script.
+さらに、新しいページを追加することは URL を通じてエンドユーザーに公開される名前をもつ PHP スクリプトを新たに作る必要があるということです
+(``http://example.com/bye.php``): PHP
+スクリプトの名前とクライアント URL のあいだに直接のマッピングが存在しています。これはリクエストのディスパッチが Web サーバーによって直接行われるからです。このディスパッチを我々のコードに移すことはよりよい柔軟性のためによいことでしょう。これはすべてのクライアントのリクエストを単独の PHP スクリプトにルーティングさせることでかんたんに実現できます。
 
 .. tip::
 
-    Exposing a single PHP script to the end user is a design pattern called
-    the "`front controller`_".
+    エンドユーザーに単独の PHP スクリプトを公開するやりかたは
+    「 `フロントコントローラf`_ 」と呼ばれるデザインパターンです。
 
-Such a script might look like the following::
+このようなスクリプトは次のようになります。::
 
     <?php
 
@@ -110,7 +97,7 @@ Such a script might look like the following::
 
     $response->send();
 
-And here is for instance the new ``hello.php`` script::
+そして新しい ``hello.php`` スクリプトの例です。::
 
     <?php
 
@@ -119,41 +106,31 @@ And here is for instance the new ``hello.php`` script::
     $input = $request->get('name', 'World');
     $response->setContent(sprintf('Hello %s', htmlspecialchars($input, ENT_QUOTES, 'UTF-8')));
 
-In the ``front.php`` script, ``$map`` associates URL paths with their
-corresponding PHP script paths.
+``front.php`` スクリプトにおいて、 ``$map`` は URL のパスを対応する PHP スクリプトのパスに関連づけます。
 
-As a bonus, if the client asks for a path that is not defined in the URL map,
-we return a custom 404 page; you are now in control of your website.
+おまけとして、URL マップの中で定義されていないパスをクライアントが問い合わせると、カスタマイズされた 404 ページが返されます。Web サイトを思いどおりにできます。
 
-To access a page, you must now use the ``front.php`` script:
+ページにアクセスするには、 ``front.php`` スクリプトを使わなければなりません。
 
 * ``http://example.com/front.php/hello?name=Fabien``
 
 * ``http://example.com/front.php/bye``
 
-``/hello`` and ``/bye`` are the page *path*s.
+``/hello`` と ``/bye`` の両方はページの *パス* です。
 
 .. tip::
 
-    Most web servers like Apache or nginx are able to rewrite the incoming
-    URLs and remove the front controller script so that your users will be
-    able to type ``http://example.com/hello?name=Fabien``, which looks much
-    better.
+    Apache もしくは nginx のような Web サーバーはやってくる URL を書き換え、フロントコントローラのスクリプトを取り除くので、
+    Web サイトのユーザーはずっと見やすい ``http://example.com/hello?name=Fabien`` を入力できるようになります。
 
-So, the trick is the usage of the ``Request::getPathInfo()`` method which
-returns the path of the Request by removing the front controller script name
-including its sub-directories (only if needed -- see above tip).
+これは、サブディレクトリを含む ((必要な場合のみ -- 上記のティップをご覧ください)) フロントコントローラスクリプトの名前を取り除くことによって Request オブジェクトのパスを返す ``Request::getPathInfo()`` メソッドを使うことで実現されます。
 
 .. tip::
 
-    You don't even need to setup a web server to test the code. Instead,
-    replace the ``$request = Request::createFromGlobals();`` call to something
-    like ``$request = Request::create('/hello?name=Fabien');`` where the
-    argument is the URL path you want to simulate.
+    コードをテストするために Web サーバーをセットアップする必要はありません。
+    代わりに、 ``$request = Request::create('/hello?name=Fabien');`` のような ``$request = Request::createFromGlobals();`` に置き換えます。引数はシミュレートしたい URL のパスです。
 
-Now that the web server always access the same script (``front.php``) for all
-our pages, we can secure our code further by moving all other PHP files
-outside the web root directory:
+これで Web サーバーはすべてのページに対して同じスクリプト (``front.php``) にアクセスするので、ほかのすべての PHP ファイルを Web サイトのルートディレクトリの外側に移動させることで我々のコードをよりセキュアなものにできます。
 
 .. code-block:: text
 
@@ -168,17 +145,14 @@ outside the web root directory:
     └── web
         └── front.php
 
-Now, configure your web server root directory to point to ``web/`` and all
-other files won't be accessible from the client anymore.
+これで、 ``web/`` に指し示す Web サーバーのルートディレクトリの設定を行い、ほかのすべてのファイルはクライアントからアクセスできなくなります。
 
 .. note::
 
-    For this new structure to work, you will have to adjust some paths in
-    various PHP files; the changes are left as an exercise for the reader.
+    新しい構造が機能するためには、さまざまな PHP ファイルのパスを調整しなければなりません。
+    変更の作業は読者の練習課題として残しておきます。
 
-The last thing that is repeated in each page is the call to ``setContent()``.
-We can convert all pages to "templates" by just echoing the content and
-calling the ``setContent()`` directly from the front controller script::
+最後の取り組みはそれぞれのページで繰り返される ``setContent()`` の呼び出しです。コンテンツを echo で出力し ``setContent()`` をフロントコントローラスクリプトを直接呼び出すだけですべてのページを「テンプレート」に変換できます。::
 
     <?php
 
@@ -198,7 +172,7 @@ calling the ``setContent()`` directly from the front controller script::
 
     // ...
 
-And the ``hello.php`` script can now be converted to a template::
+そして ``hello.php`` スクリプトはテンプレートに変換できます。::
 
     <!-- example.com/src/pages/hello.php -->
 
@@ -237,16 +211,14 @@ We have our framework for today::
 
     $response->send();
 
-Adding a new page is a two step process: add an entry in the map and create a
-PHP template in ``src/pages/``. From a template, get the Request data via the
-``$request`` variable and tweak the Response headers via the ``$response``
-variable.
+新しいページを追加する作業は2つのステップになります。エントリをマップに追加し、 ``src/pages/`` の中で PHP テンプレートを作ります。テンプレートから、
+``$request`` 変数を通じて Request のデータを取得し、 ``$response``
+変数を通じて Response ヘッダーを調整します。
 
 .. note::
 
-    If you decide to stop here, you can probably enhance your framework by
-    extracting the URL map to a configuration file.
+    ここで止めるのであれば、URL マップを設定ファイルに抽出することであなたのフレームワークを強化できるでしょう。
 
-.. _`front controller`: http://symfony.com/doc/current/book/from_flat_php_to_symfony2.html#a-front-controller-to-the-rescue
+.. _`フロントコントローラ`: http://symfony.com/doc/current/book/from_flat_php_to_symfony2.html#a-front-controller-to-the-rescue
 
-.. 20XX/XX/XX username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
+.. 2012/05/04 username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
