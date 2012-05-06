@@ -1,15 +1,10 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 8)
 =======================================================================
 
-Some watchful readers pointed out some subtle but nonetheless important bugs
-in the framework we have built yesterday. When creating a framework, you must
-be sure that it behaves as advertised. If not, all the applications based on
-it will exhibit the same bugs. The good news is that whenever you fix a bug,
-you are fixing a bunch of applications too.
+用心深い読者の方に昨日つくったフレームワークにささいだが重大なバグがあることを指摘しました。フレームワークをつくるとき、フレームワークのふるまいが想定どおりなのか確認しなければなりません。そうでなければ、それにもとづいたすべてのアプリケーションは同じバグをさらすことになります。よいニュースはバグを修正すれば、無数のアプリケーションも修正したことになります。
 
-Today's mission is to write unit tests for the framework we have created by
-using `PHPUnit`_. Create a PHPUnit configuration file in
-``example.com/phpunit.xml.dist``:
+今日のミッションは `PHPUnit`_ を使ってすでに作成したフレームワークのユニットテストを書くことです。
+``example.com/phpunit.xml.dist`` の中で PHPUnit の設定ファイルを作ります。
 
 .. code-block:: xml
 
@@ -33,16 +28,9 @@ using `PHPUnit`_. Create a PHPUnit configuration file in
         </testsuites>
     </phpunit>
 
-This configuration defines sensible defaults for most PHPUnit settings; more
-interesting, the autoloader is used to bootstrap the tests, and tests will be
-stored under the ``example.com/tests/`` directory.
+このコンフィギュレーションはたいていの PHPUnit の道理に適ったデフォルト設定を定義します; さらに興味深いことに、オートローダはテストをブートストラップするために使われ、テストは ``example.com/tests/`` ディレクトリに保存されます。
 
-Now, let's write a test for "not found" resources. To avoid the creation of
-all dependencies when writing tests and to really just unit-test what we want,
-we are going to use `test doubles`_. Test doubles are easier to create when we
-rely on interfaces instead of concrete classes. Fortunately, Symfony2 provides
-such interfaces for core objects like the URL matcher and the controller
-resolver. Modify the framework to make use of them::
+では、「not found」のリソースに対するテストを書いてみましょう。テストを書くときにすべての依存オブジェクトの生成を避けるためと、本当に必要なことだけをユニットテストするために、 `テストダブル`_ を使います。テストダブルは具象クラスの代わりにインターフェイスに依存するときに作るのがかんたんです。さいわいなことに、Symfony2 は URL マッチャとコントローラリゾルバのようなコアオブジェクトに対するインターフェイスを提供します。これらを利用するためにフレームワークを修正します。::
 
     <?php
 
@@ -69,7 +57,7 @@ resolver. Modify the framework to make use of them::
         // ...
     }
 
-We are now ready to write our first test::
+最初のテストを書く準備はできています。::
 
     <?php
 
@@ -106,12 +94,10 @@ We are now ready to write our first test::
         }
     }
 
-This test simulates a request that does not match any route. As such, the
-``match()`` method returns a ``ResourceNotFoundException`` exception and we
-are testing that our framework converts this exception to a 404 response.
+このテストはどのルートにもマッチしないリクエストをシミュレートします。そういうものとして、
+``match()`` メソッドは``ResourceNotFoundException`` 例外を返し、我々のフレームワークがこの例外を 404 レスポンスに変換することをテストしています。
 
-Executing this test is as simple as running ``phpunit`` from the
-``example.com`` directory:
+このテストの実行はシンプルで ``example.com`` ディレクトリから ``phpunit`` を実行するだけです。
 
 .. code-block:: bash
 
@@ -119,14 +105,13 @@ Executing this test is as simple as running ``phpunit`` from the
 
 .. note::
 
-    I do not explain how the code works in details as this is not the goal of
-    this series, but if you don't understand what the hell is going on, I
-    highly recommend you to read PHPUnit documentation on `test doubles`_.
+    この連載の目的からはずれるので、コードがどのように動くのかくわしくは説明しませんが、
+    何が行われているのかわからなければ、
+    PHPUnit の `テストダブル`_ のドキュメントを読むことをおすすめします。
 
-After the test ran, you should see a green bar. If not, you have a bug
-either in the test or in the framework code!
+テストを実行した後で、緑のバーが見えます。そうでなければ、テストもしくはフレームワークのコードにバグがあります！
 
-Adding a unit test for any exception thrown in a controller is just as easy::
+コントローラに投げられる例外のユニットテストを追加することはかんたんです。::
 
     public function testErrorHandling()
     {
@@ -137,8 +122,7 @@ Adding a unit test for any exception thrown in a controller is just as easy::
         $this->assertEquals(500, $response->getStatusCode());
     }
 
-Last, but not the least, let's write a test for when we actually have a proper
-Response::
+最後に、適切な Response が実際にあるときのテストを書いてみましょう。::
 
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\HttpKernel\Controller\ControllerResolver;
@@ -167,31 +151,22 @@ Response::
         $this->assertContains('Hello Fabien', $response->getContent());
     }
 
-In this test, we simulate a route that matches and returns a simple
-controller. We check that the response status is 200 and that its content is
-the one we have set in the controller.
+このテストにおいて、マッチしてシンプルなコントローラを返すルートをシミュレートします。レスポンスステータスが 200 でコンテンツがコントローラにセットしたものと同じであることをチェックします。
 
-To check that we have covered all possible use cases, run the PHPUnit test
-coverage feature (you need to enable `XDebug`_ first):
+すべてのあり得るユースケースをカバーしたことをチェックするために、PHPUnit のテストカバレッジを実行します (最初に `XDebug`_ を有効にする必要があります)。
 
 .. code-block:: bash
 
     $ phpunit --coverage-html=cov/
 
-Open ``example.com/cov/src_Simplex_Framework.php.html`` in a browser and check
-that all the lines for the Framework class are green (it means that they have
-been visited when the tests were executed).
+``example.com/cov/src_Simplex_Framework.php.html`` をブラウザで開き、 Framework クラスに対するすべての行が緑色であることをチェックします (このことはテストが実行されたときにこれらが訪問済みであることを意味します)。
 
-Thanks to the simple object-oriented code that we have written so far, we have
-been able to write unit-tests to cover all possible use cases of our
-framework; test doubles ensured that we were actually testing our code and not
-Symfony2 code.
+これまで書いたシンプルなオブジェクト指向のコードのおかげで、フレームワークのあり得るすべてのユースケースをカバーするユニットテストを書くことができました; テストダブルは我々が Symfony2 のコードではなく我々のコードを本当にテストしていることを保証しました。
 
-Now that we are confident (again) about the code we have written, we can
-safely think about the next batch of features we want to add to our framework.
+我々が書いたコートに(再び)確信を得ることができたので、次に我々のフレームワークに追加したいバッチの機能を安心して考えることができます。
 
-.. _`PHPUnit`:      http://www.phpunit.de/manual/current/en/index.html
-.. _`test doubles`: http://www.phpunit.de/manual/current/en/test-doubles.html
+.. _`PHPUnit`:      http://www.phpunit.de/manual/current/ja/index.html
+.. _`テストダブル`: http://www.phpunit.de/manual/current/ja/test-doubles.html
 .. _`XDebug`:       http://xdebug.org/
 
-.. 20XX/XX/XX username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
+.. 2012/05/06 masakielastic d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
