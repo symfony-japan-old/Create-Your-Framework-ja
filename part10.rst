@@ -1,6 +1,11 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 10)
 ========================================================================
 
+.. note::
+
+    この記事は Symfony2 コンポーネントでフレームワークをつくる方法を説明した連載記事の一部です: `1`_, `2`_, `3`_, `4`_, `5`_, `6`_, `7`_, `8`_, `9`_, `10`_, `11`_, `12`_
+
+
 この連載のパート2の結論において、Symfony2 コンポーネントを使うことによる大きな恩恵を話しました: コンポーネントを使うすべてのフレームワークとアプリケーションのあいだの *相互運用性* です。 ``HttpKernelInterface`` を実装するフレームワークをつくることでこのゴールに向かって大きく前進しましょう。::
 
     namespace Symfony\Component\HttpKernel;
@@ -157,5 +162,18 @@ RFC5861 で定義された ``stale-while-revalidate`` と ``stale-if-error`` HTT
 .. _`HTTP キャッシング`: http://symfony.com/doc/current/book/http_cache.html
 .. _`ESI`:          http://en.wikipedia.org/wiki/Edge_Side_Includes
 .. _`Varnish`:      https://www.varnish-cache.org/
+.. _`1`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part01.html
+.. _`2`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part02.html
+.. _`3`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part03.html
+.. _`4`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part04.html
+.. _`5`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part05.html
+.. _`6`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part06.html
+.. _`7`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part07.html
+.. _`8`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part08.html
+.. _`9`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part09.html
+.. _`10`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part10.html
+.. _`11`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part11.html
+.. _`12`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part12.html
+
 
 .. 2012/05/06 masakielastic d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab

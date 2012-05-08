@@ -1,9 +1,13 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 12)
 ========================================================================
 
-In the last installment of this series, we have emptied the
-``HttpKernel`` クラスを継承する ``Simplex\\Framework`` クラス by extending the ``HttpKernel`` class from
-the eponymous component。この空のクラスを見てみると、フロントコントローラからコードの一部を移動させたいと思うかもしれません。::
+.. note::
+
+    この記事は Symfony2 コンポーネントでフレームワークをつくる方法を説明した連載記事の一部です: `1`_, `2`_, `3`_, `4`_, `5`_, `6`_, `7`_, `8`_, `9`_, `10`_, `11`_, `12`_
+
+
+この連載の最後の回において、祖先のコンポーネント から ``HttpKernel`` クラスを拡張することで、
+``HttpKernel`` クラスを継承する ``Simplex\\Framework`` クラスを空にしました。この空のクラスを見てみると、フロントコントローラからコードの一部を移動させたいと思うかもしれません。::
 
     <?php
 
@@ -66,15 +70,9 @@ the eponymous component。この空のクラスを見てみると、フロント
 
 * 文字集合を ``ResponseListener`` に渡される文字集合の値を変更できなくなりました (次善策はコンストラクタの引数として渡すことです)。
 
-Dependency Injection を使っていたので以前のコードは同じ問題を禁止しませんでした; all dependencies of our objects were injected into their
-constructors (for instance, the event dispatchers were injected into the
-framework so that we had total control of its creation and configuration).
+Dependency Injection を使っていたので以前のコードは同じ問題を禁止しませんでした; すべての依存オブジェクトはコンストラクタに注入されました (たとえば、イベントディスパッチャはフレームワークに注入されるので、フレームワークの生成とコンフィギュレーションの全体的なコントールができます)。
 
-Does it mean that we have to make a choice between flexibility, customization,
-ease of testing and not to copy and paste the same code into each application
-front controller? As you might expect, there is a solution. We can solve all
-these issues and some more by using the Symfony2 dependency injection
-container:
+このことは、柔軟性、カスタマイズ、テストのやりやすさと同じコードをそれぞれのアプリケーションのフロントコントローラにコピー＆ペーストしないようにすることなどから選択しなければならないことをいみするのでしょうか？ご想像のとおり、解決策があります。Symfony2 の Dependency Injection コンテナを使うことでこれらの問題およびそれ以外の問題もすべて解決できます。
 
 .. code-block:: json
 
@@ -92,7 +90,7 @@ container:
         }
     }
 
-Create a new file to host the dependency injection container configuration::
+Dependency Injection コンテナのコンフィギュレーションをホストする新しいファイルをつくります。::
 
     <?php
 
@@ -204,10 +202,22 @@ Create a new file to host the dependency injection container configuration::
 
 ~~ FIN ~~
 
-*P.S.:* じゅうぶんな興味があれば (この投稿をコメントをください)、I might
-write some more articles on specific topics (ルーティングのための設定ファイルを使うこと、HttpKernel デバッギングツールを使うこと、ブラウザをシミュレートするために組み込みのクライアントを使うことなどは筆者が思い浮かべているトピックの一部です)。
+*P.S.:* じゅうぶんな興味があれば (この投稿をコメントをください)、特定のトピックに関してくわしい記事を書くことを考えております (ルーティングのための設定ファイルを使うこと、HttpKernel デバッギングツールを使うこと、ブラウザをシミュレートするために組み込みのクライアントを使うことなどは筆者が思い浮かべているトピックの一部です) 。
 
 .. _`Pimple`:      https://github.com/fabpot/Pimple
 .. _`Application`: https://github.com/fabpot/Silex/blob/master/src/Silex/Application.php
+.. _`1`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part01.html
+.. _`2`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part02.html
+.. _`3`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part03.html
+.. _`4`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part04.html
+.. _`5`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part05.html
+.. _`6`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part06.html
+.. _`7`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part07.html
+.. _`8`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part08.html
+.. _`9`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part09.html
+.. _`10`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part10.html
+.. _`11`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part11.html
+.. _`12`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part12.html
+
 
 .. 2012/05/09 masakielastic c0877802ef38c15b936eca69ae0b7dd4254e783a

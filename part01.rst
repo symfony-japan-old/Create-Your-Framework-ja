@@ -1,6 +1,10 @@
 Web フレームワークをつくろう - Symfony コンポーネントの上に (パート 1)
 =======================================================================
 
+.. note::
+
+    この記事は Symfony2 コンポーネントでフレームワークをつくる方法を説明した連載記事の一部です: `1`_, `2`_, `3`_, `4`_, `5`_, `6`_, `7`_, `8`_, `9`_, `10`_, `11`_, `12`_
+
 Symfony2 は単体で独立していて、疎結合され、凝縮された PHP コンポーネントの集まりで、Web 開発の共通の問題を解決します。
 
 これらの低水準のコンポーネントに取り組む代わりに、フルスタックフレームワークの Symfony2 をすぐに使い始めることができます。これは先ほどあげた Symfony2 のコンポーネントがもとになっています。もしくはまったくあなた独自のフレームワークを作ることもできます。この連載は後者に関するものです。
@@ -142,12 +146,24 @@ CLI で ``autoload.php`` を実行できます。これは何も行わず、エ�
 
 このシリーズの最初の部分はこれでおしまいです。次に、HttpFoundation コンポーネントを導入して何がもたらされるか見ることにします。
 
-.. _`ドキュメント`:             http://symfony.com/doc
+.. _`ドキュメント`:              http://symfony.com/doc
 .. _`Silex`:                     http://silex.sensiolabs.org/
 .. _`オートロード`:                  http://fr.php.net/autoload
 .. _`Composer`:                  http://packagist.org/about-composer
 .. _`PSR-0`:                     https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
 .. _`Symfony2 のコーディング標準`: http://symfony.com/doc/current/contributing/code/standards.html
 .. _`ClassLoader`:               http://symfony.com/doc/current/components/class_loader.html
+.. _`1`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part01.html
+.. _`2`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part02.html
+.. _`3`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part03.html
+.. _`4`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part04.html
+.. _`5`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part05.html
+.. _`6`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part06.html
+.. _`7`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part07.html
+.. _`8`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part08.html
+.. _`9`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part09.html
+.. _`10`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part10.html
+.. _`11`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part11.html
+.. _`12`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part12.html
 
 .. 2012/01/29 masakielastic db93254dea29d07acf1acd066029e5db0fdf33e6
