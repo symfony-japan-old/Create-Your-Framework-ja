@@ -1,8 +1,7 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 4)
 =======================================================================
 
-Before we start with today's topic, let's refactor our current framework just
-a little to make templates even more readable::
+今日のトピックを始める前に、テンプレートをもっと読みやすくするために、現在の我々のフレームワークを少しリファクタリングしましょう。::
 
     <?php
 
@@ -32,30 +31,26 @@ a little to make templates even more readable::
 
     $response->send();
 
-As we now extract the request query parameters, simplify the ``hello.php``
-template as follows::
+リクエストクエリパラメータを抽出したので、``hello.php``
+テンプレートを次のように簡略化します。::
 
     <!-- example.com/src/pages/hello.php -->
 
     Hello <?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?>
 
-Now, we are in good shape to add new features.
+これで、新しい機能を追加するのによい状態にあります。
 
-One very important aspect of any website is the form of its URLs. Thanks to
-the URL map, we have decoupled the URL from the code that generates the
-associated response, but it is not yet flexible enough. For instance, we might
-want to support dynamic paths to allow embedding data directly into the URL
-instead of relying on a query string:
+Web サイトのとても重要な側面は URL の形式です。URL マップのおかげで、関連するレスポンスを生成するコードから URL を分離しましたが、まだじゅうぶんに柔軟ではありません。たとえば、クエリ文字列に依存する代わりにデータを URL に直接埋め込むコトができるようにするために動的なパスをサポートしたいとします。:
 
-    # Before
+    # 変更前
     /hello?name=Fabien
 
-    # After
+    # 変更後
     /hello/Fabien
 
-To support this feature, we are going to use the Symfony2 Routing component.
-As always, add it to ``composer.json`` and run the ``php composer.phar
-update`` command to install it:
+このフィーチャをサポートするために、Symfony2 の Routing コンポーネントを使います。
+いつものように、これを ``composer.json`` に追加しインストールするために ``php composer.phar
+update`` を実行します。
 
 .. code-block:: json
 
@@ -67,9 +62,7 @@ update`` command to install it:
         }
     }
 
-From now on, we are going to use the generated Composer autoloader instead of
-our own ``autoload.php``. Remove the ``autoload.php`` file and replace its
-reference in ``front.php``::
+これから、我々独自の ``autoload.php`` の代わりに生成された Composer のオートローダーを使います。 ``autoload.php`` ファイルを取り除き、 ``front.php`` への参照を置き換えます。::
 
     <?php
 
@@ -79,34 +72,30 @@ reference in ``front.php``::
 
     // ...
 
-Instead of an array for the URL map, the Routing component relies on a
-``RouteCollection`` instance::
+URL マップに対して配列の代わりに、Routing コンポーネントは ``RouteCollection`` インスタンスに依存します。::
 
     use Symfony\Component\Routing\RouteCollection;
 
     $routes = new RouteCollection();
 
-Let's add a route that describe the ``/hello/SOMETHING`` URL and add another
-one for the simple ``/bye`` one::
+``/hello/SOMETHING`` URL を記述するルートを追加し、シンプルな ``/bye`` の URL に対する別のルートも追加しましょう。::
 
     use Symfony\Component\Routing\Route;
 
     $routes->add('hello', new Route('/hello/{name}', array('name' => 'World')));
     $routes->add('bye', new Route('/bye'));
 
-Each entry in the collection is defined by a name (``hello``) and a ``Route``
-instance, which is defined by a route pattern (``/hello/{name}``) and an array
-of default values for route attributes (``array('name' => 'World')``).
+コレクションのそれぞれのエントリは名前 (``hello``) と ``Route``
+のインスタンスによって定義されます。これはルートのパターン (``/hello/{name}``) とルートの属性に対するデフォルト値の配列 (``array('name' => 'World')``) によって定義されます。
 
 .. note::
 
-    Read the official `documentation`_ for the Routing component to learn more
-    about its many features like URL generation, attribute requirements, HTTP
-    method enforcements, loaders for YAML or XML files, dumpers to PHP or
-    Apache rewrite rules for enhanced performance, and much more.
+    URL 生成、属性のルーティング要件、HTTP
+    メソッドの強化、YAML もしくは XML ファイルのローダー、PHP へのダンパーもしくは
+    性能の向上のための Apache の書き換えルールなどのたくさんのフィーチャをもっと学びたいのであれば 公式の `ドキュメント`_ をご覧ください。
 
-Based on the information stored in the ``RouteCollection`` instance, a
-``UrlMatcher`` instance can match URL paths::
+``RouteCollection`` インスタンスに保存された情報にもとづいて、
+``UrlMatcher`` インスタンスは URL パスのマッチングを行います。::
 
     use Symfony\Component\Routing\RequestContext;
     use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -117,9 +106,9 @@ Based on the information stored in the ``RouteCollection`` instance, a
 
     $attributes = $matcher->match($request->getPathInfo());
 
-The ``match()`` method takes a request path and returns an array of attributes
-(notice that the matched route is automatically stored under the special
-``_route`` attribute)::
+``match()`` メソッドはリクエストのパスを引数にとり属性の配列を返します
+(マッチ済みのルートは特別な
+``_route`` 属性のもとに自動的に保存されることにご注意ください)::
 
     print_r($matcher->match('/bye'));
     array (
@@ -140,16 +129,15 @@ The ``match()`` method takes a request path and returns an array of attributes
 
 .. note::
 
-    Even if we don't strictly need the request context in our examples, it is
-    used in real-world applications to enforce method requirements and more.
+    我々の例でリクエストのコンテクストを厳密に必要としないとしても、メソッドの要件を強化するために実際の世界のアプリケーションで使われています。
 
-The URL matcher throws an exception when none of the routes match::
+マッチするルートがないときに URL マッチャは例外を投げます。::
 
     $matcher->match('/not-found');
 
     // throws a Symfony\Component\Routing\Exception\ResourceNotFoundException
 
-With this knowledge in mind, let's write the new version of our framework::
+このことを念頭において、フレームワークの新しいバージョンを書きましょう。::
 
     <?php
 
@@ -182,19 +170,19 @@ With this knowledge in mind, let's write the new version of our framework::
 
     $response->send();
 
-There are a few new things in the code::
+コードの中に少し新しい内容が含まれています。::
 
-* Route names are used for template names;
+* ルートの名前はテンプレートの名前に使われます;
 
-* ``500`` errors are now managed correctly;
+* ``500`` エラーは正しく管理されます;
 
-* Request attributes are extracted to keep our templates simple::
+* リクエストの属性はテンプレートをシンプルに保つために抽出されました::
 
       <!-- example.com/src/pages/hello.php -->
 
       Hello <?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?>
 
-* Routes configuration has been moved to its own file:
+* ルートのコンフィギュレーションは独自のファイルに移動しました:
 
   .. code-block:: php
 
@@ -210,48 +198,40 @@ There are a few new things in the code::
 
       return $routes;
 
-  We now have a clear separation between the configuration (everything
-  specific to our application in ``app.php``) and the framework (the generic
-  code that powers our application in ``front.php``).
+  これでコンフィギュレーション (``app.php`` の中のアプリケーションに固有なすべての内容) とフレームワーク (``front.php`` の中の我々のアプリケーションに動力を提供する一般的なコード) のあいだが明確に分離されました。
 
-With less than 30 lines of code, we have a new framework, more powerful and
-more flexible than the previous one. Enjoy!
+30行以下のコードによって、以前よりも強力で柔軟な新しいフレームワークが手に入りました。エンジョイしましょう！
 
-Using the Routing component has one big additional benefit: the ability to
-generate URLs based on Route definitions. When using both URL matching and URL
-generation in your code, changing the URL patterns should have no other
-impact. Want to know how to use the generator? Insanely easy::
+Routing コンポーネントを使うことで1つの追加された大きな恩恵があります: Route の定義にもとづいて URL を生成する機能です。URL マッチ と URL
+の生成を使うことで、URL パターンを変更してもほかのところに影響がありません。ジェネレータの使い方を知りたいですか？きわめてかんたんです。::
 
     use Symfony\Component\Routing;
 
     $generator = new Routing\Generator\UrlGenerator($routes, $context);
 
     echo $generator->generate('hello', array('name' => 'Fabien'));
-    // outputs /hello/Fabien
+    // /hello/Fabien を出力します
 
-The code should be self-explanatory; and thanks to the context, you can even
-generate absolute URLs::
+コードがやっていることは自明です; そしてコンテクストのおかげで、絶対 URL を生成できます。::
 
     echo $generator->generate('hello', array('name' => 'Fabien'), true);
-    // outputs something like http://example.com/somewhere/hello/Fabien
+    // http://example.com/somewhere/hello/Fabien のようなものを出力します
 
 .. tip::
 
-    Concerned about performance? Based on your route definitions, create a
-    highly optimized URL matcher class that can replace the default
-    ``UrlMatcher``::
+    パフォーマンスが心配ですか？ルートの定義にもとづき、
+    デフォルトの ``UrlMatcher`` を置き換える高度に最適化された URL マッチャクラスを作ります。::
 
         $dumper = new Routing\Matcher\Dumper\PhpMatcherDumper($routes);
 
         echo $dumper->dump();
 
-    Want even more performance? Dump your routes as a set of Apache rewrite
-    rules::
+    さらにパフォーマンスを改善したいですか？ルートを Apache の書き換えルールのセットとして吐き出させます。::
 
         $dumper = new Routing\Matcher\Dumper\ApacheMatcherDumper($routes);
 
         echo $dumper->dump();
 
-.. _`documentation`: http://symfony.com/doc/current/components/routing.html
+.. _`ドキュメント`: http://symfony.com/doc/current/components/routing.html
 
-.. 20XX/XX/XX username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
+.. 2012/05/04 username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab

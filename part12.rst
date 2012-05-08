@@ -2,9 +2,8 @@ Web フレームワークをつくろう - Symfony2 コンポーネントの上�
 ========================================================================
 
 In the last installment of this series, we have emptied the
-``Simplex\\Framework`` class by extending the ``HttpKernel`` class from
-the eponymous component. Seeing this empty class, you might be tempted to move
-some code from the front controller to it::
+``HttpKernel`` クラスを継承する ``Simplex\\Framework`` クラス by extending the ``HttpKernel`` class from
+the eponymous component。この空のクラスを見てみると、フロントコントローラからコードの一部を移動させたいと思うかもしれません。::
 
     <?php
 
@@ -33,7 +32,7 @@ some code from the front controller to it::
         }
     }
 
-The front controller code would become more concise::
+フロントコントローラのコードは簡潔になります。::
 
     <?php
 
@@ -50,39 +49,24 @@ The front controller code would become more concise::
 
     $framework->handle($request)->send();
 
-Having a concise front controller allows you to have several front controllers
-for a single application. Why would it be useful? To allow having different
-configuration for the development environment and the production one for
-instance. In the development environment, you might want to have error
-reporting turned on and errors displayed in the browser to ease debugging::
+簡潔なフロントコントローラを用意することで、単独のアプリケーションに対して複数のフロントコントローラを用意することができます。なぜこれが便利なのでしょうか？たとえば開発環境と運用環境で異なりコンフィギュレーションを用意することができます。開発環境において、デバッグを楽にするために、エラー報告機能を有効にしてブラウザにエラーを表示させるとよいでしょう。::
 
     ini_set('display_errors', 1);
     error_reporting(-1);
 
-... but you certainly won't want that same configuration on the production
-environment. Having two different front controllers gives you the opportunity
-to have a slightly different configuration for each of them.
+... しかし運用環境において同じコンフィギュレーションは望んでいないでしょう。2つの異なるフロントコントローラを用意することで、それぞれに対して微妙に異なるコンフィギュレーションを用意する機会がもたらされます。
 
-So, moving code from the front controller to the framework class makes our
-framework more configurable, but at the same time, it introduces a lot of
-issues:
+ですので、コードをフロントコントローラからフレームワークに移動させると、我々のフレームワークのコンフィギュレーションはより調整しやすくなりますが、同時に、たくさんの問題も導入されます。
 
-* We are not able to register custom listeners anymore as the dispatcher is
-  not available outside the Framework class (an easy workaround could be the
-  adding of a ``Framework::getEventDispatcher()`` method);
+* ディスパッチャが Framework クラスの外側で利用できないのでカスタムリスナーをもはや登録できなくなります (かんたんな次善策は ``Framework::getEventDispatcher()`` メソッドの追加です);
 
-* We have lost the flexibility we had before; you cannot change the
-  implementation of the ``UrlMatcher`` or of the ``ControllerResolver``
-  anymore;
+* 以前あった柔軟性が失われました; ``UrlMatcher`` の実装もしくは ``ControllerResolver`` の実装を変更することができません;
 
-* Related to the previous point, we cannot test our framework easily anymore
-  as it's impossible to mock internal objects;
+* 以前のポイントと関連して、内部オブジェクトのモックをつくることができないのでフレームワークをかんたんにテストできなくなりました;
 
-* We cannot change the charset passed to ``ResponseListener`` anymore (a
-  workaround could be to pass it as a constructor argument).
+* 文字集合を ``ResponseListener`` に渡される文字集合の値を変更できなくなりました (次善策はコンストラクタの引数として渡すことです)。
 
-The previous code did not exhibit the same issues because we used dependency
-injection; all dependencies of our objects were injected into their
+Dependency Injection を使っていたので以前のコードは同じ問題を禁止しませんでした; all dependencies of our objects were injected into their
 constructors (for instance, the event dispatchers were injected into the
 framework so that we had total control of its creation and configuration).
 
@@ -144,26 +128,16 @@ Create a new file to host the dependency injection container configuration::
 
     return $sc;
 
-The goal of this file is to configure your objects and their dependencies.
-Nothing is instantiated during this configuration step. This is purely a
-static description of the objects you need to manipulate and how to create
-them. Objects will be created on-demand when you access them from the
-container or when the container needs them to create other objects.
+このファイルの目的はオブジェクトとそれらの依存オブジェクトの設定を行うことです。このコンフィギュレーションの調整ステップにおいてインスタンスの生成は必要はありません。操作して生成する必要のあるオブジェクトの静止的な記述です。オブジェクトはコンテナからそれらにアクセスするときもしくはコンテナがほかのオブジェクトを生成するためにそれらを必要とするときに生成されます。
 
-For instance, to create the router listener, we tell Symfony that its class
-name is ``Symfony\Component\HttpKernel\EventListener\RouterListener``, and
-that its constructor takes a matcher object (``new Reference('matcher')``). As
-you can see, each object is referenced by a name, a string that uniquely
-identifies each object. The name allows us to get an object and to reference
-it in other object definitions.
+たとえば、ルーターリスナーをつくりたい場合、クラスの名前が ``Symfony\Component\HttpKernel\EventListener\RouterListener`` であり、それらのコンストラクタがマッチャオブジェクト (``new Reference('matcher')``) を引数にとることを Symfony に伝えます。ご覧のとおり、それぞれのオブジェクトは名前で参照されます。名前は一意性のある文字列でそれぞれのオブジェクトを特定します。名前によってオブジェクトを取得し、ほかのオブジェクトの定義の中でそれを参照することができます。
 
 .. note::
 
-    By default, every time you get an object from the container, it returns
-    the exact same instance. That's because a container manages your "global"
-    objects.
+    デフォルトでは、コンテナからオブジェクトを取得するたびに、    まったく同じ名前のインスタンスが返されます。
+    これはコンテナが「グローバル」オブジェクトをマネージするからです。
 
-The front controller is now only about wiring everything together::
+これでフロントコントローラは一緒にすべてのものを結びつけることだけに専念するようになりました。::
 
     <?php
 
@@ -184,75 +158,56 @@ The front controller is now only about wiring everything together::
 
 .. note::
 
-    If you want a light alternative for your container, consider `Pimple`_, a
-    simple dependency injection container in about 60 lines of PHP code.
+    コンテナの軽量な代替版がほしいのであれば、 `Pimple`_ をお考えください。
+    これは PHP 約60行の PHP コードによるシンプルな Dependency Injection コンテナです。
 
-Now, here is how you can register a custom listener in the front controller::
+では、フロントコントローラでカスタムリスナーを登録する方法は次のとおりです。::
 
     $sc->register('listener.string_response', 'Simplex\StringResponseListener');
     $sc->getDefinition('dispatcher')
         ->addMethodCall('addSubscriber', array(new Reference('listener.string_response')))
     ;
 
-Beside describing your objects, the dependency injection container can also be
-configured via parameters. Let's create one that defines if we are in debug
-mode or not::
+オブジェクトを記述することに加えて、Dependency Injection コンテナはパラメータを通じてコンフィギュレーションを調整できます。デバッグモードもしくはそうであるかどうかを定義するものをつくってみましょう。::
 
     $sc->setParameter('debug', true);
 
     echo $sc->getParameter('debug');
 
-These parameters can be used when defining object definitions. Let's make the
-charset configurable::
+これらのパラメータはオブジェクト定義を定義するときに使います。文字集合の設定を変更できるようにしましょう。::
 
     $sc->register('listener.response', 'Symfony\Component\HttpKernel\EventListener\ResponseListener')
         ->setArguments(array('%charset%'))
     ;
 
-After this change, you must set the charset before using the response listener
-object::
+これを変更すると、レスポンスリスナーオブジェクトを使って文字集合をセットしなければなりません。::
 
     $sc->setParameter('charset', 'UTF-8');
 
-Instead of relying on the convention that the routes are defined by the
-``$routes`` variables, let's use a parameter again::
+ルートは ``$routes`` 変数によって定義されるという慣習の代わりに、再度パラメータを使ってみましょう。::
 
     $sc->register('matcher', 'Symfony\Component\Routing\Matcher\UrlMatcher')
         ->setArguments(array('%routes%', new Reference('context')))
     ;
 
-And the related change in the front controller::
+そしてフロントコントローラのなかの関連する変更内容です。::
 
     $sc->setParameter('routes', include __DIR__.'/../src/app.php');
 
-We have obviously barely scratched the surface of what you can do with the
-container: from class names as parameters, to overriding existing object
-definitions, from scope support to dumping a container to a plain PHP class,
-and much more. The Symfony dependency injection container is really powerful
-and is able to manage any kind of PHP classes.
+コンテナで対処できることの表面をほとんどスクラッチしませんでした: パラメータとしてのクラス名から、既存のオブジェクト定義のオーバーライド、コンテナをプレーンな PHP クラスにダンプするまでのスコープのサポートなどです。Symfony の Dependency Injection コンテナは本当に強力で 任意の PHP クラスをマネージできます。
 
-Don't yell at me if you don't want to have a dependency injection container in
-your framework. If you don't like it, don't use it. It's your framework, not
-mine.
+あなたのフレームワークに Dependency Injection コンテナは必要ないと私に大声で言うのはやめてください。好きでなければ、使わないでください。これはあなたのフレームワークであり、私のものではありません。
+これは (すでに) Symfony2 コンポーネントでフレームワークを作成する最後のパートです。多くのトピックがくわしい内容をカバーしていないことを認識していますが、独自のことを始めることと Symfony2 フレームワークが内部でどのように動くのか理解するためにはじゅうぶんな情報が提供されています。
+さらにくわしく学びたいのであれば、Silex マイクロフレームワークのソースコード、とりわけ `Application` クラスを読むことをおすすめします。
 
-This is (already) the last part of my series on creating a framework on top of
-the Symfony2 components. I'm aware that many topics have not been covered in
-great details, but hopefully it gives you enough information to get started on
-your own and to better understand how the Symfony2 framework works internally.
-
-If you want to learn more, I highly recommend you to read the source code of
-the Silex micro-framework, and especially its `Application`_ class.
-
-Have fun!
+楽しんでください！
 
 ~~ FIN ~~
 
-*P.S.:* If there is enough interest (leave a comment on this post), I might
-write some more articles on specific topics (using a configuration file for
-routing, using HttpKernel debugging tools, using the built-in client to
-simulate a browser are some of the topics that come to my mind for instance).
+*P.S.:* じゅうぶんな興味があれば (この投稿をコメントをください)、I might
+write some more articles on specific topics (ルーティングのための設定ファイルを使うこと、HttpKernel デバッギングツールを使うこと、ブラウザをシミュレートするために組み込みのクライアントを使うことなどは筆者が思い浮かべているトピックの一部です)。
 
 .. _`Pimple`:      https://github.com/fabpot/Pimple
 .. _`Application`: https://github.com/fabpot/Silex/blob/master/src/Silex/Application.php
 
-.. 20XX/XX/XX username c0877802ef38c15b936eca69ae0b7dd4254e783a
+.. 2012/05/09 masakielastic c0877802ef38c15b936eca69ae0b7dd4254e783a

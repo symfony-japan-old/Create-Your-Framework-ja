@@ -1,26 +1,15 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 11)
 ========================================================================
 
-If you were to use our framework right now, you would probably have to add
-support for custom error messages. Right now, we have 404 and 500 error
-support but the responses are hardcoded in the framework itself. Making them
-customizable is easy enough though: dispatch a new event and listen to it.
-Doing it right means that the listener has to call a regular controller. But
-what if the error controller throws an exception? You will end up in an
-infinite loop. There should be an easier way, right?
+我々のフレームワークをすぐに使いたいのであれば、カスタムエラーメッセージのサポートを追加しなければならないでしょう。404エラーと500エラーのサポートがありますが、レスポンスがフレームワークの中でハードコードされています。これらをカスタマイズできるようにすることはとてもかんたんです: 新しいイベントをディスパッチし、リスニングするようにします。これを行うことはリスナーが通常のコントローラを呼び出さなければならないということです。しかしエラーコントローラが例外を投げたら？無限ループに陥ります。もっとかんたんな方法があるのでしょうか？
 
-Enter the ``HttpKernel`` class. Instead of solving the same problem over and
-over again and instead of reinventing the wheel each time, the ``HttpKernel``
-class is a generic, extensible, and flexible implementation of
-``HttpKernelInterface``.
+``HttpKernel`` クラスに入ります。同じ問題を何度も解決したり、車輪の再発明を繰り返す代わりに、 ``HttpKernel``
+クラスは一般的で、拡張性があり、
+``HttpKernelInterface`` の柔軟性のある実装です。
 
-This class is very similar to the framework class we have written so far: it
-dispatches events at some strategic points during the handling of the request,
-it uses a controller resolver to choose the controller to dispatch the request
-to, and as an added bonus, it takes care of edge cases and provides great
-feedback when a problem arises.
+このクラスはこれまで書いてきたフレームワーククラスとよく似ています: これはリクエスト処理のあいだのある戦略的なポイントにおいてイベントをディスパッチし、リクエストをディスパッチするコントローラを選ぶコントローラリゾルバを使い、さらによいことに、これはエッジケースを考慮し、問題が起きたときにすばらしいフィードバックを提供してくれます。
 
-Here is the new framework code::
+新しいフレームワークのコードは次のようになります。::
 
     <?php
 
@@ -34,7 +23,7 @@ Here is the new framework code::
     {
     }
 
-And the new front controller::
+新しいフロントコントローラです。::
 
     <?php
 
@@ -63,13 +52,9 @@ And the new front controller::
     $response = $framework->handle($request);
     $response->send();
 
-``RouterListener`` is an implementation of the same logic we had in our
-framework: it matches the incoming request and populates the request
-attributes with route parameters.
+``RouterListener`` はフレームワークにある同じロジックの実装です: これはやってくるリクエストのマッチングを行い、ルートパラメータをリクエスト属性に投入します。
 
-Our code is now much more concise and surprisingly more robust and more
-powerful than ever. For instance, use the built-in ``ExceptionListener`` to
-make your error management configurable::
+コードはこれまでよりもはるかに簡潔で驚くべきほど強力になりました。たとえば、エラー管理機能を調整できるようにするためには組み込みの ``ExceptionListener`` を使います。::
 
     $errorHandler = function (HttpKernel\Exception\FlattenException $exception) {
         $msg = 'Something went wrong! ('.$exception->getMessage().')';
@@ -78,15 +63,12 @@ make your error management configurable::
     });
     $dispatcher->addSubscriber(new HttpKernel\EventListener\ExceptionListener($errorHandler));
 
-``ExceptionListener`` gives you a ``FlattenException`` instance instead of the
-thrown ``Exception`` instance to ease exception manipulation and display. It
-can take any valid controller as an exception handler, so you can create an
-ErrorController class instead of using a Closure::
+``ExceptionListener`` は例外の操作と表示を楽にするために ``Exception`` のインスタンスを投げる代わりに ``FlattenException`` のインスタンスを提供します。これは任意のコントローラを例外ハンドラとして引数にとるので、 Closure を使う代わりに ErrorController クラスをつくることができます。::
 
     $listener = new HttpKernel\EventListener\ExceptionListener('Calendar\\Controller\\ErrorController::exceptionAction');
     $dispatcher->addSubscriber($listener);
 
-The error controller reads as follows::
+エラーコントローラは次のようになります。::
 
     <?php
 
@@ -107,33 +89,25 @@ The error controller reads as follows::
         }
     }
 
-Voilà! Clean and customizable error management without efforts. And of course,
-if your controller throws an exception, HttpKernel will handle it nicely.
+ほら！労力もなしにクリーンでカスタマイズ可能なエラー管理機能が手に入りました。そしてもちろん、コントローラが例外を投げる場合、HttpKernel はそれをきちんと処理します。
 
-In part 2, we have talked about the ``Response::prepare()`` method, which
-ensures that a Response is compliant with the HTTP specification. It is
-probably a good idea to always call it just before sending the Response to the
-client; that's what the ``ResponseListener`` does::
+パート2において、 ``Response::prepare()`` メソッドを説明しました。このメソッドは Response が HTTP の仕様にしたがっていることを保証します。Response をクライアントに送る直前にこれを呼び出すのは常によい考えでしょう; ``ResponseListener`` がやっていることはこれです。::
 
     $dispatcher->addSubscriber(new HttpKernel\EventListener\ResponseListener('UTF-8'));
 
-This one was easy too! Let's take another one: do you want out of the box
-support for streamed responses? Just subscribe to
-``StreamedResponseListener``::
+この呼び出しもかんたんでした！別のものを見てみましょう: ストリーム化されたレスポンスのサポートをそのまま利用したいですか？ ``StreamedResponseListener`` を購読するだけです。::
 
     $dispatcher->addSubscriber(new HttpKernel\EventListener\StreamedResponseListener());
 
-And in your controller, return a ``StreamedResponse`` instance instead of a
-``Response`` instance.
+そしてコントローラの中では、Response のインスタンスの代わりに ``StreamedResponse`` のインスタンスを返します。
 
 .. tip::
 
-    Read the `Internals`_ chapter of the Symfony2 documentation to learn more
-    about the events dispatched by HttpKernel and how they allow you to change
-    the flow of a request.
+    HttpKernel によってディスパッチされるイベントとそれらのイベントによって
+    リクエストのフローをどのように変更できるのかに関しては
+    Symfony2 の `内部`_ の章をご覧ください。
 
-Now, let's create a listener, one that allows a controller to return a string
-instead of a full Response object::
+では、コントローラにフルの Response オブジェクトの代わりに文字列を返すことをさせるリスナーをつくりましょう。::
 
     class LeapYearController
     {
@@ -148,10 +122,8 @@ instead of a full Response object::
         }
     }
 
-To implement this feature, we are going to listen to the ``kernel.view``
-event, which is triggered just after the controller has been called. Its goal
-is to convert the controller return value to a proper Response instance, but
-only if needed::
+このフィーチャを実装するために、 ``kernel.view``
+イベントにリスニングします。これはコントローラが呼び出された直後に発動します。これの目的は必要な場合にかぎり、コントローラの戻り値を適切な Response インスタンスに変換することです。::
 
     <?php
 
@@ -180,35 +152,22 @@ only if needed::
         }
     }
 
-The code is simple because the ``kernel.view`` event is only triggered when
-the controller return value is not a Response and because setting the response
-on the event stops the event propagation (our listener cannot interfere with
-other view listeners).
+コードはシンプルで ``kernel.view`` イベントはコントローラの戻り値が Response ではない場合にかぎり発動しイベント上でレスポンスを設定するとイベントプロパゲーションが止まります (リスナーはほかのビューリスナーに干渉することはできません)。
 
-Don't forget to register it in the front controller::
+フロントコントローラでリスナーを登録することをお忘れなく。::
 
     $dispatcher->addSubscriber(new Simplex\StringResponseListener());
 
 .. note::
 
-    If you forget to register the subscriber, HttpKernel will throw an
-    exception with a nice message: ``The controller must return a response
-    (Nope, this is not a leap year. given).``.
+    サブスクライバを登録することを忘れると、HttpKernel はわかりやすいメッセージとともに
+    例外を投げます: ``The controller must return a response
+    (Nope, this is not a leap year. given).``
 
-At this point, our whole framework code is as compact as possible and it is
-mainly composed of an assembly of existing libraries. Extending is a matter
-of registering event listeners/subscribers.
+この点で、我々のフレームワーク全体のコードは可能なかぎりコンパクトで、既存のライブラリの集まりで構成されています。機能の拡張はイベントリスナー/サブスクライバを登録することで行われます。
 
-Hopefully, you now have a better understanding of why the simple looking
-``HttpKernelInterface`` is so powerful. Its default implementation,
-``HttpKernel``, gives you access to a lot of cool features, ready to be used
-out of the box, with no efforts. And because HttpKernel is actually the code
-that powers the Symfony2 and Silex frameworks, you have the best of both
-worlds: a custom framework, tailored to your needs, but based on a rock-solid
-and well maintained low-level architecture that has been proven to work for
-many websites; a code that has been audited for security issues and that has
-proven to scale well.
+うまくいけば、 ``HttpKernelInterface`` を求めることがとても強力であることの理解がより深まります。デフォルトの実装である ``HttpKernel`` は労力なしでそのまま使うことのできるたくさんのクールなフィーチャをもたらします。そして ``HttpKernel`` は Symfony2 と Silex フレームワークを推し進めるコードなので、両方の世界の最高のものをもたらします: カスタムフレームワークで、あなたのニーズにテーラメードされていますが、多くのサイトで動くことが証明された堅牢でよくメンテナンスされた低レイヤーのアーキテクチャおよび セキュリティの問題に関して検査されおよびじゅうぶんにスケールアウトできることが証明されたコードにもとづいています。
 
-.. _`Internals`: http://symfony.com/doc/current/book/internals.html#events
+.. _`内部`: http://symfony.com/doc/current/book/internals.html#events
 
 .. 20XX/XX/XX username 60617d75a2d7672f8674d9664f892f5178001f27
