@@ -1,21 +1,15 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 7)
 =======================================================================
 
-One down-side of our framework right now is that we need to copy and paste the
-code in ``front.php`` each time we create a new website. 40 lines of code is
-not that much, but it would be nice if we could wrap this code into a proper
-class. It would bring us better *reusability* and easier testing to name just
+今のところ我々のフレームワークの1つの欠点は新しい Web サイトをつくるたびに ``front.php`` でコードをコピー＆ペーストする必要があることです。40行のコードは多くありませんが、このコードを適切なクラスに包むことができれば都合がよいです。It would bring us better *reusability* and easier testing to name just
 a few benefits.
 
-If you have a closer look at the code, ``front.php`` has one input, the
-Request, and one output, the Response. Our framework class will follow this
-simple principle: the logic is about creating the Response associated with a
-Request.
+コードをよく見てみると、 ``front.php`` には1つの入力である
+Request と1つの出力である Response があります。我々のフレームワークは次のシンプルな原則にしたがいます: ロジックは Request に関連する Response をつくることに専念します。
 
-As the Symfony2 components requires PHP 5.3, let's create our very own
-namespace for our framework: ``Simplex``.
+Symfony2 コンポーネントは PHP 5.3 を必須とするので、我々のフレームワークのために独自の名前空間をつくりましょう: ``Simplex`` 
 
-Move the request handling logic into its own ``Simplex\\Framework`` class::
+リクエストハンドリングのロジックを ``Simplex\\Framework`` クラスに移動させます。::
 
     <?php
 
@@ -59,7 +53,7 @@ Move the request handling logic into its own ``Simplex\\Framework`` class::
         }
     }
 
-And update ``example.com/web/front.php`` accordingly::
+そしてそれに応じて ``example.com/web/front.php`` をアップデートします。::
 
     <?php
 
@@ -79,11 +73,9 @@ And update ``example.com/web/front.php`` accordingly::
 
     $response->send();
 
-To wrap up the refactoring, let's move everything but routes definition from
-``example.com/src/app.php`` into yet another namespace: ``Calendar``.
+リファクタリングを仕上げるために、 ``example.com/src/app.php`` からルートの定義以外のすべてをまた別の名前空間: ``Calendar`` に移動させましょう。
 
-For the classes defined under the ``Simplex`` and ``Calendar`` namespaces to
-be autoloaded, update the ``composer.json`` file:
+``Simplex`` と ``Calendar`` 名前空間のもとで定義されたクラスがオートロードされるようにするため、 ``composer.json`` ファイルをアップデートします。
 
 .. code-block:: javascript
 
@@ -101,9 +93,9 @@ be autoloaded, update the ``composer.json`` file:
 
 .. note::
 
-    For the autoloader to be updated, run ``php composer.phar update``.
+    オートローダをアップデートするため、 ``php composer.phar update`` を実行します。
 
-Move the controller to ``Calendar\\Controller\\LeapYearController``::
+コントローラを ``Calendar\\Controller\\LeapYearController`` に移動させます。::
 
     <?php
 
@@ -128,7 +120,7 @@ Move the controller to ``Calendar\\Controller\\LeapYearController``::
         }
     }
 
-And move the ``is_leap_year()`` function to its own class too::
+そして ``is_leap_year()`` 関数を独自のクラスに移動させます。::
 
     <?php
 
@@ -148,14 +140,14 @@ And move the ``is_leap_year()`` function to its own class too::
         }
     }
 
-Don't forget to update the ``example.com/src/app.php`` file accordingly::
+それにしたがって ``example.com/src/app.php`` ファイルをアップデートすることをお忘れなく。::
 
     $routes->add('leap_year', new Routing\Route('/is_leap_year/{year}', array(
         'year' => null,
         '_controller' => 'Calendar\\Controller\\LeapYearController::indexAction',
     )));
 
-To sum up, here is the new file layout:
+まとめると、新しいファイルのレイアウトは次のようになります。
 
 .. code-block:: text
 
@@ -174,21 +166,16 @@ To sum up, here is the new file layout:
     └── web
         └── front.php
 
-That's it! Our application has now four different layers and each of them has
-a well defined goal:
+これでおしまいです！我々のフレームワークには4つの異なるレイヤーが用意され、それぞれに明確なゴールがあります。
 
-* ``web/front.php``: The front controller; the only exposed PHP code that
-  makes the interface with the client (it gets the Request and sends the
-  Response) and provides the boiler-plate code to initialize the framework and
-  our application;
+* ``web/front.php``: フロントコントローラ; クライアントにインターフェイスを公開する
+  唯一の PHP コード (Request を取得し Response を返す) で 
+  フレームワークとアプリケーションを初期化するボイラーテンプレートコードを提供します;
 
-* ``src/Simplex``: The reusable framework code that abstracts the handling of
-  incoming Requests (by the way, it makes your controllers/templates easily
-  testable -- more about that later on);
+* ``src/Simplex``: やってくる Request の処理を抽象化する再利用可能なフレームワーク (ところで、これはコントローラ/テンプレートをかんたんにテストできるようにします -- あとでくわしく説明します);
 
-* ``src/Calendar``: Our application specific code (the controllers and the
-  model);
+* ``src/Calendar``: アプリケーション固有のコード (コントローラとモデル);
 
-* ``src/app.php``: The application configuration/framework customization.
+* ``src/app.php``: アプリケーションのコンフィギュレーション/フレームワークのカスタマイズ内容。
 
-.. 20XX/XX/XX username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
+.. 2012/05/05 masakielastic d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab

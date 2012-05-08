@@ -1,10 +1,7 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 10)
 ========================================================================
 
-In the conclusion of the second part of this series, I've talked about one
-great benefit of using the Symfony2 components: the *interoperability* between
-all frameworks and applications using them. Let's do a big step towards this
-goal by making our framework implement ``HttpKernelInterface``::
+この連載のパート2の結論において、Symfony2 コンポーネントを使うことによる大きな恩恵を話しました: コンポーネントを使うすべてのフレームワークとアプリケーションのあいだの *相互運用性* です。 ``HttpKernelInterface`` を実装するフレームワークをつくることでこのゴールに向かって大きく前進しましょう。::
 
     namespace Symfony\Component\HttpKernel;
 
@@ -16,12 +13,9 @@ goal by making our framework implement ``HttpKernelInterface``::
         function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true);
     }
 
-``HttpKernelInterface`` is probably the most important piece of code in the
-HttpKernel component, no kidding. Frameworks and applications that implement
-this interface are fully interoperable. Moreover, a lot of great features will
-come with it for free.
+``HttpKernelInterface`` は冗談抜きに HttpKernel コンポーネントの中でもっとも重要なピースでしょう。このインターフェイスを実装するフレームワークとアプリケーションはじゅうぶんな相互運用性があります。さらに、たくさんのすばらしいフィーチャがそのままついてきます。
 
-Update your framework so that it implements this interface::
+このインターフェイスを実装するようにフレームワークをアップデートします。::
 
     <?php
 
@@ -41,12 +35,10 @@ Update your framework so that it implements this interface::
         }
     }
 
-Even if this change looks trivial, it brings us a lot! Let's talk about one of
-the most impressive one: transparent `HTTP caching`_ support.
+この変更がささいなものであれ、たくさんのものがもたらされます！もっとも印象に残るものの1つ: 透過的な `HTTP キャッシング`_ サポートについて語りましょう。
 
-The ``HttpCache`` class implements a fully-featured reverse proxy, written in
-PHP; it implements ``HttpKernelInterface`` and wraps another
-``HttpKernelInterface`` instance::
+``HttpCache`` クラスは PHP で書かれたフルフィーチャのリバースプロキシを実装します; ``HttpKernelInterface`` を実装し
+``HttpKernelInterface`` インスタンスを包み込みます。::
 
     // example.com/web/front.php
 
@@ -55,11 +47,9 @@ PHP; it implements ``HttpKernelInterface`` and wraps another
 
     $framework->handle($request)->send();
 
-That's all it takes to add HTTP caching support to our framework. Isn't it
-amazing?
+HTTP キャッシングサポートをフレームワークに追加するために必要なことはこれですべてです。驚きました？
 
-Configuring the cache needs to be done via HTTP cache headers. For instance,
-to cache a response for 10 seconds, use the ``Response::setTtl()`` method::
+キャッシュ機能の調整は HTTP キャッシュヘッダー経由で行うことが必要です。たとえば、10秒のあいだにレスポンスをキャッシュしたいのであれば、 ``Response::setTtl()`` メソッドを使います。::
 
     // example.com/src/Calendar/Controller/LeapYearController.php
 
@@ -79,32 +69,22 @@ to cache a response for 10 seconds, use the ``Response::setTtl()`` method::
 
 .. tip::
 
-    If, like me, you are running your framework from the command line by
-    simulating requests (``Request::create('/is_leap_year/2012')``), you can
-    easily debug Response instances by dumping their string representation
-    (``echo $response;``) as it displays all headers as well as the response
-    content.
+    筆者のように、リクエストをシミュレートすることでコマンドラインからフレームワークを実行している場合 (``Request::create('/is_leap_year/2012')``) 、Response のインスタンスを文字列表現 (``echo $response;``) として吐き出させることでかんたんにデバッグすることできます。文字列表現にはレスポンスのコンテントと同じようにすべてのヘッダーが含まれます。
 
-To validate that it works correctly, add a random number to the response
-content and check that the number only changes every 10 seconds::
+これが正しく動くのか検証するためには、レスポンスのコンテントにランダムな数値を追加し、10秒ごとに数値だけが変わることをチェックします。::
 
     $response = new Response('Yep, this is a leap year! '.rand());
 
 .. note::
 
-    When deploying to your production environment, keep using the Symfony2
-    reverse proxy (great for shared hosting) or even better, switch to a more
-    efficient reverse proxy like `Varnish`_.
+    プロダクション環境にデプロイするとき、Symfony2 のリバースプロキシを使い続けるか
+    (共用ホスティングの用途にすぐれています) もしくはより方法は、
+    `Varnish`_ のようなより効率的なリバースプロキシに切り替えることです。
 
-Using HTTP cache headers to manage your application cache is very powerful and
-allows you to tune finely your caching strategy as you can use both the
-expiration and the validation models of the HTTP specification. If you are not
-comfortable with these concepts, I highly recommend you to read the `HTTP
-caching`_ chapter of the Symfony2 documentation.
+アプリケーションキャッシュをマネージするために HTTP キャッシュヘッダーを使うやりかたはとても強力で、HTTP の仕様の有効期限とバリデーションモデルの両方を使うことができるので、キャッシング戦略をきめ細かく調整できます。これらのコンセプトを快適に感じないのであれば、 `HTTP
+キャッシング`_ の章を読んでいただくことをおすすめします。
 
-The Response class contains many other methods that let you configure the
-HTTP cache very easily. One of the most powerful is ``setCache()`` as it
-abstracts the most frequently used caching strategies into one simple array::
+Response クラスにはたくさんのメソッドが用意されているので、HTTP キャッシュの調整をとてもかんたんにできます。もっとも強力なものの1つは ``setCache()`` でもっともよく使われるキャッシング戦略を1つのシンプルな配列に抽象化します。::
 
     $date = date_create_from_format('Y-m-d H:i:s', '2005-10-15 10:00:00');
 
@@ -116,16 +96,14 @@ abstracts the most frequently used caching strategies into one simple array::
         's_maxage'      => 10,
     ));
 
-    // it is equivalent to the following code
+    // 上記のコードは次のコードと同等です
     $response->setPublic();
     $response->setEtag('abcde');
     $response->setLastModified($date);
     $response->setMaxAge(10);
     $response->setSharedMaxAge(10);
 
-When using the validation model, the ``isNotModified()`` method allows you to
-easily cut on the response time by short-circuiting the response generation as
-early as possible::
+バリデーションモデルを使うとき、 ``isNotModified()`` メソッドによっってレスポンスの生成を可能なかぎり短縮することでレスポンスの時間をかんたんに短くすることができます。::
 
     $response->setETag('whatever_you_compute_as_an_etag');
 
@@ -136,11 +114,8 @@ early as possible::
 
     return $response;
 
-Using HTTP caching is great, but what if you cannot cache the whole page? What
-if you can cache everything but some sidebar that is more dynamic that the
-rest of the content? Edge Side Includes (`ESI`_) to the rescue! Instead of
-generating the whole content in one go, ESI allows you to mark a region of a
-page as being the content of a sub-request call::
+HTTP キャッシングを使うことはすばらしいですが、ページ全体をキャッシュすることはできないのでしょうか？
+動的なサイドバー以外の残りのコンテンツをキャッシュしたい場合は？Edge Side Includes (`ESI`_) が助けになります！コンテンツ全体を生成する代わりに、ESI によってページの領域をサブリクエスト呼び出しのコンテンツとしてマークできます。::
 
     This is the content of your page
 
@@ -148,9 +123,7 @@ page as being the content of a sub-request call::
 
     Some other content
 
-For ESI tags to be supported by HttpCache, you need to pass it an instance of
-the ``ESI`` class. The ``ESI`` class automatically parses ESI tags and makes
-sub-requests to convert them to their proper content::
+HttpCache によってサポートされる ESI タグに関して、 ``ESI`` クラスのインスタンスにそれを渡す必要があります。 ``ESI`` クラスは自動的に ESI タグをパースし、これらを適切なコンテントに変換するためにサブリクエストを作成します。::
 
     $framework = new HttpKernel\HttpCache\HttpCache(
         $framework,
@@ -160,18 +133,14 @@ sub-requests to convert them to their proper content::
 
 .. note::
 
-    For ESI to work, you need to use a reverse proxy that supports it like the
-    Symfony2 implementation. `Varnish`_ is the best alternative and it is
-    Open-Source.
+    ESI を動かすために、Symfony2 の実装のようなリバースプロキシを使う必要があります。
+    `Varnish`_ は最良の代替ソフトウェアです。
 
-When using complex HTTP caching strategies and/or many ESI include tags, it
-can be hard to understand why and when a resource should be cached or not. To
-ease debugging, you can enable the debug mode::
+複雑な HTTP キャッシングストラテジと/またはたくさんの ESI のインクルードタグを使うとき、リソースをキャッシュすべきかどうかを理解するのは困難な状況があり得ます。デバッグを楽にするために、デバッグモードを有効にすることができます。::
 
     $framework = new HttpCache($framework, new Store(__DIR__.'/../cache'), new ESI(), array('debug' => true));
 
-The debug mode adds a ``X-Symfony-Cache`` header to each response that
-describes what the cache layer did:
+デバッグモードではキャッシュレイヤーが行ったことをそれぞれのレスポンスに ``X-Symfony-Cache`` ヘッダーを追加されます。
 
 .. code-block:: text
 
@@ -179,16 +148,14 @@ describes what the cache layer did:
 
     X-Symfony-Cache:  GET /is_leap_year/2012: fresh
 
-HttpCache has many features like support for the
-``stale-while-revalidate`` and ``stale-if-error`` HTTP Cache-Control
-extensions as defined in RFC 5861.
+HttpCache には多くのフィーチャが備わっており、has many features like support for the
+RFC5861 で定義された ``stale-while-revalidate`` と ``stale-if-error`` HTTP Cache-Control
+エクステンションが用意されています。
 
-With the addition of a single interface, our framework can now benefit from
-the many features built into the HttpKernel component; HTTP caching being just
-one of them but an important one as it can make your applications fly!
+単一のインターフェイスに加えて、HttpKernel コンポーネントに組み込まれている多くのフィーチャから恩恵を得ることができます; HTTP キャッシングはそれらの1つでしかありませんが、我々のアプリケーションを羽ばたかせるために大切なフィーチャです！
 
-.. _`HTTP caching`: http://symfony.com/doc/current/book/http_cache.html
+.. _`HTTP キャッシング`: http://symfony.com/doc/current/book/http_cache.html
 .. _`ESI`:          http://en.wikipedia.org/wiki/Edge_Side_Includes
 .. _`Varnish`:      https://www.varnish-cache.org/
 
-.. 20XX/XX/XX username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
+.. 2012/05/06 masakielastic d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
