@@ -121,7 +121,7 @@ PHP において、リクエストはグローバル変数によって表れさ�
 では ``Request`` と
 ``Response`` クラスを使ってアプリケーションを書き換えましょう。::
 
-    <php
+    <?php
 
     // framework/index.php
 
