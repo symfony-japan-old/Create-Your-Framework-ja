@@ -1,6 +1,11 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 9)
 =======================================================================
 
+.. note::
+
+    この記事は Symfony2 コンポーネントでフレームワークをつくる方法を説明した連載記事の一部です: `1`_, `2`_, `3`_, `4`_, `5`_, `6`_, `7`_, `8`_, `9`_, `10`_, `11`_, `12`_
+
+
 我々のフレームワークにはよいフレームワークにあるべき主な特徴が欠けています:
 *拡張性* です。拡張できるということはリクエストが処理される方法を修正するフレームワークのライフサイクルに手軽にフックできることを意味します。
 
@@ -288,5 +293,18 @@ Analytics のコードをすべてのレスポンスに透過的に追加する�
 
 .. _`WSGI`: http://www.python.org/dev/peps/pep-0333/#middleware-components-that-play-both-sides
 .. _`Rack`: http://rack.rubyforge.org/
+.. _`1`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part01.html
+.. _`2`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part02.html
+.. _`3`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part03.html
+.. _`4`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part04.html
+.. _`5`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part05.html
+.. _`6`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part06.html
+.. _`7`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part07.html
+.. _`8`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part08.html
+.. _`9`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part09.html
+.. _`10`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part10.html
+.. _`11`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part11.html
+.. _`12`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part12.html
+
 
 .. 2012/05/06 masakielastic d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab

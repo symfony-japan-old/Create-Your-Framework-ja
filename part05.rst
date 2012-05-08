@@ -1,6 +1,11 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 5)
 =======================================================================
 
+.. note::
+
+    この記事は Symfony2 コンポーネントでフレームワークをつくる方法を説明した連載記事の一部です: `1`_, `2`_, `3`_, `4`_, `5`_, `6`_, `7`_, `8`_, `9`_, `10`_, `11`_, `12`_
+
+
 賢明な読者は特定の「コード」 (テンプレート) が実行される方法をフレームワークがハードコードしていることに気づいています。これまでつくったようなシンプルなページに関して、問題はありませんが、さらにロジックを追加したい場合、ロジックをテンプレート自身に置くことを強制させられます。これはとりわけ関心の分離をまだ覚えているのであれば、おそらくはよい考えではありません。
 
 新しいレイヤーであるコントローラを追加することでテンプレートのコードをロジックから分離しましょう: *コントローラのミッションはクライアントの Request によって運ばれた情報にもとづいて Response を生成することです。*
@@ -157,5 +162,18 @@ Web フレームワークをつくろう - Symfony2 コンポーネントの上�
 
 .. _`コールバック`: http://php.net/callback#language.types.callback
 .. _`Web サイト`:  http://kottke.org/08/02/single-serving-sites
+.. _`1`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part01.html
+.. _`2`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part02.html
+.. _`3`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part03.html
+.. _`4`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part04.html
+.. _`5`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part05.html
+.. _`6`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part06.html
+.. _`7`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part07.html
+.. _`8`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part08.html
+.. _`9`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part09.html
+.. _`10`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part10.html
+.. _`11`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part11.html
+.. _`12`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part12.html
+
 
 .. 2012/05/05 username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab

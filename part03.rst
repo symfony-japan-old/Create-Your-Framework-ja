@@ -1,6 +1,11 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 3)
 =======================================================================
 
+.. note::
+
+    この記事は Symfony2 コンポーネントでフレームワークをつくる方法を説明した連載記事の一部です: `1`_, `2`_, `3`_, `4`_, `5`_, `6`_, `7`_, `8`_, `9`_, `10`_, `11`_, `12`_
+
+
 これまで、ページが1つしかなかったので、我々のアプリケーションは割り切ったものでした。少しおもしろくするために、頭をやわらかくして、Goodbye を伝える別のページを追加しましょう。::
 
     <?php
@@ -220,5 +225,18 @@ We have our framework for today::
     ここで止めるのであれば、URL マップを設定ファイルに抽出することであなたのフレームワークを強化できるでしょう。
 
 .. _`フロントコントローラ`: http://symfony.com/doc/current/book/from_flat_php_to_symfony2.html#a-front-controller-to-the-rescue
+.. _`1`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part01.html
+.. _`2`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part02.html
+.. _`3`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part03.html
+.. _`4`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part04.html
+.. _`5`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part05.html
+.. _`6`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part06.html
+.. _`7`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part07.html
+.. _`8`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part08.html
+.. _`9`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part09.html
+.. _`10`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part10.html
+.. _`11`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part11.html
+.. _`12`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part12.html
+
 
 .. 2012/05/04 username d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
