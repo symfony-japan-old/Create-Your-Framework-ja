@@ -1,6 +1,11 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 6)
 =======================================================================
 
+.. note::
+
+    この記事は Symfony2 コンポーネントでフレームワークをつくる方法を説明した連載記事の一部です: `1`_, `2`_, `3`_, `4`_, `5`_, `6`_, `7`_, `8`_, `9`_, `10`_, `11`_, `12`_
+
+
 我々のフレームワークはすでにとても堅牢であるとお考えかもしれません。そしてはそれはおそらく正しいです。それでも改善する方法を見てみましょう。
 
 今すぐ、我々のコードは手続き型のコードを使いますが、コントローラは任意の PHP コールバックになることを覚えておいてください。コントローラを適切なクラスに変換しましょう。::
@@ -174,5 +179,18 @@ Request と属性を同時にインジェクトすることもできます (マ�
 .. _`リフレクション`:              http://php.net/reflection
 .. _`FrameworkExtraBundle`:    http://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
 .. _`サービスとしてのコントローラ`: http://symfony.com/doc/current/cookbook/controller/service.html
+.. _`1`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part01.html
+.. _`2`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part02.html
+.. _`3`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part03.html
+.. _`4`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part04.html
+.. _`5`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part05.html
+.. _`6`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part06.html
+.. _`7`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part07.html
+.. _`8`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part08.html
+.. _`9`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part09.html
+.. _`10`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part10.html
+.. _`11`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part11.html
+.. _`12`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part12.html
+
 
 .. 2012/05/02 masakielastic d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab

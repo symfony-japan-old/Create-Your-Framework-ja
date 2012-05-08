@@ -1,6 +1,11 @@
 Web フレームワークをつくろう - Symfony2 コンポーネントの上に (パート 8)
 =======================================================================
 
+.. note::
+
+    この記事は Symfony2 コンポーネントでフレームワークをつくる方法を説明した連載記事の一部です: `1`_, `2`_, `3`_, `4`_, `5`_, `6`_, `7`_, `8`_, `9`_, `10`_, `11`_, `12`_
+
+
 用心深い読者の方に昨日つくったフレームワークにささいだが重大なバグがあることを指摘しました。フレームワークをつくるとき、フレームワークのふるまいが想定どおりなのか確認しなければなりません。そうでなければ、それにもとづいたすべてのアプリケーションは同じバグをさらすことになります。よいニュースはバグを修正すれば、無数のアプリケーションも修正したことになります。
 
 今日のミッションは `PHPUnit`_ を使ってすでに作成したフレームワークのユニットテストを書くことです。
@@ -168,5 +173,18 @@ Web フレームワークをつくろう - Symfony2 コンポーネントの上�
 .. _`PHPUnit`:      http://www.phpunit.de/manual/current/ja/index.html
 .. _`テストダブル`: http://www.phpunit.de/manual/current/ja/test-doubles.html
 .. _`XDebug`:       http://xdebug.org/
+.. _`1`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part01.html
+.. _`2`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part02.html
+.. _`3`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part03.html
+.. _`4`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part04.html
+.. _`5`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part05.html
+.. _`6`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part06.html
+.. _`7`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part07.html
+.. _`8`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part08.html
+.. _`9`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part09.html
+.. _`10`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part10.html
+.. _`11`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part11.html
+.. _`12`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part12.html
+
 
 .. 2012/05/06 masakielastic d0ff8bc245d198bd8eadece0a2f62b9ecd6ae6ab
