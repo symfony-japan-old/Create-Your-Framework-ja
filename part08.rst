@@ -6,7 +6,7 @@ Web フレームワークをつくろう - Symfony2 コンポーネントの上�
     この記事は Symfony2 コンポーネントでフレームワークをつくる方法を説明した連載記事の一部です: `1`_, `2`_, `3`_, `4`_, `5`_, `6`_, `7`_, `8`_, `9`_, `10`_, `11`_, `12`_
 
 
-用心深い読者の方に昨日つくったフレームワークにささいだが重大なバグがあることを指摘しました。フレームワークをつくるとき、フレームワークのふるまいが想定どおりなのか確認しなければなりません。そうでなければ、それにもとづいたすべてのアプリケーションは同じバグをさらすことになります。よいニュースはバグを修正すれば、無数のアプリケーションも修正したことになります。
+用心深い読者の方が昨日つくったフレームワークにささいだが重大なバグがあることを指摘しました。フレームワークをつくるとき、フレームワークのふるまいが想定どおりなのか確認しなければなりません。そうでなければ、それにもとづいたすべてのアプリケーションは同じバグをさらすことになります。よいニュースはバグを修正すれば、無数のアプリケーションも修正したことになります。
 
 今日のミッションは `PHPUnit`_ を使ってすでに作成したフレームワークのユニットテストを書くことです。
 ``example.com/phpunit.xml.dist`` の中で PHPUnit の設定ファイルを作ります。
@@ -170,8 +170,8 @@ Web フレームワークをつくろう - Symfony2 コンポーネントの上�
 
 我々が書いたコートに(再び)確信を得ることができたので、次に我々のフレームワークに追加したいバッチの機能を安心して考えることができます。
 
-.. _`PHPUnit`:      http://www.phpunit.de/manual/current/ja/index.html
-.. _`テストダブル`: http://www.phpunit.de/manual/current/ja/test-doubles.html
+.. _`PHPUnit`:      http://phpunit.de/manual/current/ja/index.html
+.. _`テストダブル`: http://phpunit.de/manual/current/ja/test-doubles.html
 .. _`XDebug`:       http://xdebug.org/
 .. _`1`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part01.html
 .. _`2`:    http://docs.symfony.gr.jp/symfony2/create-your-framework/part02.html
